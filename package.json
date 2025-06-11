@@ -15,7 +15,14 @@
     "db:migrate": "node scripts/migrate.js migrate",
     "db:rollback": "node scripts/migrate.js rollback",
     "db:seed": "psql -h localhost -U postgres -d pharmacy_platform -f database/06_sample_data.sql",
-    "db:reset": "npm run db:rollback && npm run db:migrate && npm run db:seed"
+    "db:reset": "npm run db:rollback && npm run db:migrate && npm run db:seed",
+    "deploy": "bash deploy.sh",
+    "deploy:windows": "powershell -ExecutionPolicy Bypass -File deploy.ps1",
+    "deploy:pm2": "pm2 start ecosystem.config.js --env production",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "netlify deploy --prod --dir=.next",
+    "test:api": "node scripts/test-all-apis.js",
+    "test:api:ps": "powershell -ExecutionPolicy Bypass -File scripts/test-apis.ps1"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",

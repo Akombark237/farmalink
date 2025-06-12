@@ -21,6 +21,8 @@
     "deploy:pm2": "pm2 start ecosystem.config.js --env production",
     "deploy:vercel": "vercel --prod",
     "deploy:netlify": "netlify deploy --prod --dir=.next",
+    "deploy:render": "echo 'Deploy to Render via GitHub integration'",
+    "build:render": "bash build.sh",
     "test:api": "node scripts/test-all-apis.js",
     "test:api:ps": "powershell -ExecutionPolicy Bypass -File scripts/test-apis.ps1"
   },

@@ -102,7 +102,7 @@ export default function Cart() {
   }, [cartItems, promoApplied]);
 
   // Handle quantity update
-  const updateQuantity = (id, newQuantity) => {
+  const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
     setCartItems(
       cartItems.map((item) =>
@@ -112,7 +112,7 @@ export default function Cart() {
   };
 
   // Handle item removal
-  const removeItem = (id) => {
+  const removeItem = (id: number) => {
     setCartItems(cartItems.filter((item) => item.id !== id));
   };
 
@@ -128,7 +128,7 @@ export default function Cart() {
   };
 
   // Group items by pharmacy
-  const itemsByPharmacy = cartItems.reduce((acc, item) => {
+  const itemsByPharmacy = cartItems.reduce((acc: any, item: any) => {
     if (!acc[item.pharmacyId]) {
       acc[item.pharmacyId] = {
         name: item.pharmacy,
@@ -140,7 +140,7 @@ export default function Cart() {
   }, {});
 
   // Save for later functionality
-  const saveForLater = (id) => {
+  const saveForLater = (id: number) => {
     // In a real app, this would move item to a saved items list
     alert(`Item ${id} saved for later!`);
     removeItem(id);

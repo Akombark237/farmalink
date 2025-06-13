@@ -23,12 +23,29 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+interface Pharmacy {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  status: string;
+  registrationDate: string;
+  revenue: number;
+  orders: number;
+  rating: number;
+  inventory: number;
+  hours: string;
+  license: string;
+  documents: string[];
+}
+
 const AdminPharmacies = () => {
-  const [pharmacies, setPharmacies] = useState([]);
-  const [filteredPharmacies, setFilteredPharmacies] = useState([]);
+  const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
+  const [filteredPharmacies, setFilteredPharmacies] = useState<Pharmacy[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedPharmacy, setSelectedPharmacy] = useState(null);
+  const [selectedPharmacy, setSelectedPharmacy] = useState<Pharmacy | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -142,8 +159,8 @@ const AdminPharmacies = () => {
     setFilteredPharmacies(filtered);
   }, [searchTerm, statusFilter, pharmacies]);
 
-  const getStatusColor = (status) => {
-    const colors = {
+  const getStatusColor = (status: string) => {
+    const colors: {[key: string]: string} = {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
       approved: 'bg-green-100 text-green-800 border-green-200',
       rejected: 'bg-red-100 text-red-800 border-red-200',
@@ -152,7 +169,7 @@ const AdminPharmacies = () => {
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
-  const handleStatusChange = async (pharmacyId, newStatus) => {
+  const handleStatusChange = async (pharmacyId: number, newStatus: string) => {
     setLoading(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));

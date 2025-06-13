@@ -49,7 +49,15 @@ export default function AdminDashboard() {
     { name: 'Family Health Store', location: 'Suburbs', submitted: '3 hours ago', documents: 5 }
   ];
 
-  const StatCard = ({ title, value, icon: Icon, change, changeType = 'positive' }) => (
+  interface StatCardProps {
+    title: string;
+    value: string;
+    icon: React.ComponentType<any>;
+    change?: number;
+    changeType?: 'positive' | 'negative';
+  }
+
+  const StatCard = ({ title, value, icon: Icon, change, changeType = 'positive' }: StatCardProps) => (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
         <div>
@@ -71,7 +79,18 @@ export default function AdminDashboard() {
     </div>
   );
 
-  const OrderRow = ({ order }) => (
+  interface OrderRowProps {
+    order: {
+      id: string;
+      patient: string;
+      pharmacy: string;
+      amount: number;
+      status: string;
+      time: string;
+    };
+  }
+
+  const OrderRow = ({ order }: OrderRowProps) => (
     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
       <div className="flex-1">
         <div className="flex items-center space-x-3">
@@ -179,22 +198,22 @@ export default function AdminDashboard() {
             icon={Users} 
             change={stats.userGrowth}
           />
-          <StatCard 
-            title="Active Pharmacies" 
-            value={stats.activePharmacies} 
-            icon={Building2} 
+          <StatCard
+            title="Active Pharmacies"
+            value={stats.activePharmacies.toString()}
+            icon={Building2}
             change={5.2}
           />
-          <StatCard 
-            title="Total Drugs Listed" 
-            value={stats.totalDrugs.toLocaleString()} 
-            icon={Pill} 
+          <StatCard
+            title="Total Drugs Listed"
+            value={stats.totalDrugs.toLocaleString()}
+            icon={Pill}
             change={3.7}
           />
-          <StatCard 
-            title="Today's Orders" 
-            value={stats.todayOrders} 
-            icon={ShoppingCart} 
+          <StatCard
+            title="Today's Orders"
+            value={stats.todayOrders.toString()}
+            icon={ShoppingCart}
             change={15.4}
           />
         </div>

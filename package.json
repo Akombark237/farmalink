@@ -9,7 +9,7 @@
     "start:chatbot": "cd phamarlink/gemini-proxy && set PORT=3003 && npm start",
     "check": "node check-services.js",
     "check:ps": "powershell -ExecutionPolicy Bypass -File check-services.ps1",
-    "build": "next build",
+    "build": "echo 'Building Next.js application...' && next build",
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "node scripts/migrate.js migrate",

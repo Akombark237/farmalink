@@ -6,7 +6,7 @@ import { useState } from 'react';
 const AdminDrugsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedDrugs, setSelectedDrugs] = useState([]);
+  const [selectedDrugs, setSelectedDrugs] = useState<number[]>([]);
   const [showBulkActions, setShowBulkActions] = useState(false);
 
   // Mock data for drugs
@@ -83,7 +83,7 @@ const AdminDrugsPage = () => {
     }
   ];
 
-  const handleSelectDrug = (drugId) => {
+  const handleSelectDrug = (drugId: number) => {
     setSelectedDrugs(prev => 
       prev.includes(drugId) 
         ? prev.filter(id => id !== drugId)
@@ -110,21 +110,20 @@ const AdminDrugsPage = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const getStatusBadge = (status, flagged) => {
+  const getStatusBadge = (status: string, flagged: boolean) => {
     if (flagged) {
       return <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full flex items-center gap-1">
         <AlertTriangle className="w-3 h-3" />
         Flagged
       </span>;
     }
-    
-    const statusStyles = {
-      active: 'bg-green-100 text-green-800',
-      inactive: 'bg-gray-100 text-gray-800',
-      pending: 'bg-yellow-100 text-yellow-800'
-    };
-    
-    return <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusStyles[status]}`}>
+
+    let statusClass = 'bg-gray-100 text-gray-800'; // default
+    if (status === 'active') statusClass = 'bg-green-100 text-green-800';
+    else if (status === 'inactive') statusClass = 'bg-gray-100 text-gray-800';
+    else if (status === 'pending') statusClass = 'bg-yellow-100 text-yellow-800';
+
+    return <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClass}`}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>;
   };

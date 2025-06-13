@@ -95,7 +95,7 @@ const prescriptions = [
 
 export default function RefillPrescriptionPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState<number[]>([]);
   const [refillSubmitted, setRefillSubmitted] = useState(false);
   const [selectedPharmacy, setSelectedPharmacy] = useState('');
 
@@ -105,9 +105,9 @@ export default function RefillPrescriptionPage() {
     prescription.condition.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handlePrescriptionSelect = (prescriptionId) => {
+  const handlePrescriptionSelect = (prescriptionId: number) => {
     const prescription = prescriptions.find(p => p.id === prescriptionId);
-    if (!prescription.canRefill) return;
+    if (!prescription || !prescription.canRefill) return;
 
     setSelectedPrescriptions(prev => 
       prev.includes(prescriptionId) 
@@ -122,17 +122,17 @@ export default function RefillPrescriptionPage() {
     }
   };
 
-  const getStatusBadge = (status) => {
-    const variants = {
+  const getStatusBadge = (status: string) => {
+    const variants: {[key: string]: {variant: "default" | "destructive" | "outline" | "secondary", text: string}} = {
       active: { variant: 'default', text: 'Active' },
       due: { variant: 'secondary', text: 'Due for Refill' },
       expired: { variant: 'destructive', text: 'Expired' }
     };
-    const config = variants[status];
+    const config = variants[status] || { variant: 'default' as const, text: 'Unknown' };
     return <Badge variant={config.variant}>{config.text}</Badge>;
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
         return <CheckCircle className="h-4 w-4 text-green-500" />;
@@ -374,6 +374,7 @@ export default function RefillPrescriptionPage() {
                       <div className="space-y-2">
                         {selectedPrescriptions.map(id => {
                           const prescription = prescriptions.find(p => p.id === id);
+                          if (!prescription) return null;
                           return (
                             <div key={id} className="flex justify-between items-center text-sm">
                               <span className="truncate">{prescription.medication}</span>

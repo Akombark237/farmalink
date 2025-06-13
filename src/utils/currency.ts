@@ -61,11 +61,11 @@ export function parsePrice(priceString: string): number {
  * @returns Object with converted prices
  */
 export function convertObjectPricesToCfa<T extends Record<string, any>>(
-  obj: T, 
+  obj: T,
   priceFields: string[] = ['price', 'cost', 'amount']
 ): T {
-  const converted = { ...obj };
-  
+  const converted = { ...obj } as any;
+
   priceFields.forEach(field => {
     if (typeof converted[field] === 'number') {
       converted[field] = convertUsdToCfa(converted[field]);

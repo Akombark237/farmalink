@@ -110,7 +110,7 @@ const recordCategories = [
 export default function RequestRecordsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState<number[]>([]);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
 
   const filteredRecords = medicalRecords.filter(record => {
@@ -123,7 +123,7 @@ export default function RequestRecordsPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const handleRecordSelect = (recordId) => {
+  const handleRecordSelect = (recordId: number) => {
     setSelectedRecords(prev => 
       prev.includes(recordId) 
         ? prev.filter(id => id !== recordId)
@@ -137,7 +137,7 @@ export default function RequestRecordsPage() {
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case 'available':
         return <CheckCircle className="h-4 w-4 text-green-500" />;
@@ -150,13 +150,13 @@ export default function RequestRecordsPage() {
     }
   };
 
-  const getStatusBadge = (status) => {
-    const variants = {
+  const getStatusBadge = (status: string) => {
+    const variants: {[key: string]: "default" | "destructive" | "outline" | "secondary"} = {
       available: 'default',
       processing: 'secondary',
       requested: 'outline'
     };
-    return <Badge variant={variants[status]}>{status}</Badge>;
+    return <Badge variant={variants[status] || 'default'}>{status}</Badge>;
   };
 
   if (requestSubmitted) {

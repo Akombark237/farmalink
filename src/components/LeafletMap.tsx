@@ -1,15 +1,20 @@
 ﻿'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-const LeafletMap = ({ locations, onLocationClick }) => {
+interface LeafletMapProps {
+  locations: any[];
+  onLocationClick: (location: any) => void;
+}
+
+const LeafletMap = ({ locations, onLocationClick }: LeafletMapProps) => {
   const mapRef = useRef(null);
 
   useEffect(() => {
     const initMap = async () => {
       try {
         const L = (await import('leaflet')).default;
-        await import('leaflet/dist/leaflet.css');
+        // CSS is imported in the component file
 
         if (!mapRef.current) return;
 
@@ -42,12 +47,12 @@ const LeafletMap = ({ locations, onLocationClick }) => {
           if (locations.length === 1) {
             map.setView([locations[0].lat, locations[0].lng], 15);
           } else {
-            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            const group = new (L as any).featureGroup(locations.map((loc: any) => (L as any).marker([loc.lat, loc.lng])));
             map.fitBounds(group.getBounds().pad(0.1));
           }
         }
 
-        window.handleMapClick = (id) => {
+        (window as any).handleMapClick = (id: string) => {
           const location = locations.find(l => l.id.toString() === id);
           if (location && onLocationClick) onLocationClick(location);
         };

@@ -227,7 +227,7 @@ export default function PharmacyInventory() {
   }, []);
 
   // Function to handle sorting
-  const handleSort = (field) => {
+  const handleSort = (field: string) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
@@ -276,15 +276,15 @@ export default function PharmacyInventory() {
             : b.stock - a.stock;
         } else if (sortBy === 'expiry') {
           return sortOrder === 'asc'
-            ? new Date(a.expiryDate) - new Date(b.expiryDate)
-            : new Date(b.expiryDate) - new Date(a.expiryDate);
+            ? new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()
+            : new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime();
         }
         return 0;
       });
   };
 
   // Function to delete a drug
-  const handleDelete = (id) => {
+  const handleDelete = (id: number) => {
     if (confirm('Are you sure you want to remove this item from inventory?')) {
       setInventory(inventory.filter(item => item.id !== id));
       showAlert('Item removed successfully', 'success');
@@ -292,27 +292,30 @@ export default function PharmacyInventory() {
   };
 
   // Function to show alert
-  const showAlert = (message, type = 'info') => {
+  const showAlert = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setAlertMessage({ message, type });
     setTimeout(() => setAlertMessage(null), 3000);
   };
 
   // Function to add a new drug
-  const handleAddDrug = (e) => {
+  const handleAddDrug = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Mock adding a drug (in real app, this would send data to an API)
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
     const newDrug = {
       id: inventory.length + 1,
-      name: e.target.drugName.value,
-      category: e.target.category.value,
-      manufacturer: e.target.manufacturer.value,
-      stock: parseInt(e.target.stock.value, 10),
-      price: parseFloat(e.target.price.value),
-      minStock: parseInt(e.target.minStock.value, 10),
-      expiryDate: e.target.expiryDate.value,
-      sku: e.target.sku.value,
-      description: e.target.description.value,
+      name: formData.get('drugName') as string,
+      category: formData.get('category') as string,
+      manufacturer: formData.get('manufacturer') as string,
+      stock: parseInt(formData.get('stock') as string, 10),
+      price: parseFloat(formData.get('price') as string),
+      minStock: parseInt(formData.get('minStock') as string, 10),
+      expiryDate: formData.get('expiryDate') as string,
+      sku: formData.get('sku') as string,
+      description: formData.get('description') as string,
       lastUpdated: new Date().toISOString().split('T')[0],
       image: '/api/placeholder/60/60'
     };
@@ -330,20 +333,25 @@ export default function PharmacyInventory() {
   };
 
   // Function to edit a drug
-  const handleEditDrug = (e) => {
+  const handleEditDrug = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const updatedDrug = {
+    if (!currentDrug) return;
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    const updatedDrug: InventoryItem = {
       ...currentDrug,
-      name: e.target.drugName.value,
-      category: e.target.category.value,
-      manufacturer: e.target.manufacturer.value,
-      stock: parseInt(e.target.stock.value, 10),
-      price: parseFloat(e.target.price.value),
-      minStock: parseInt(e.target.minStock.value, 10),
-      expiryDate: e.target.expiryDate.value,
-      sku: e.target.sku.value,
-      description: e.target.description.value,
+      name: formData.get('drugName') as string,
+      category: formData.get('category') as string,
+      manufacturer: formData.get('manufacturer') as string,
+      stock: parseInt(formData.get('stock') as string, 10),
+      price: parseFloat(formData.get('price') as string),
+      minStock: parseInt(formData.get('minStock') as string, 10),
+      expiryDate: formData.get('expiryDate') as string,
+      sku: formData.get('sku') as string,
+      description: formData.get('description') as string,
       lastUpdated: new Date().toISOString().split('T')[0]
     };
 
@@ -356,7 +364,7 @@ export default function PharmacyInventory() {
   };
 
   // Function to edit a drug (open modal with current data)
-  const openEditModal = (drug) => {
+  const openEditModal = (drug: InventoryItem) => {
     setCurrentDrug(drug);
     setShowEditModal(true);
   };
@@ -645,7 +653,7 @@ export default function PharmacyInventory() {
                         {(() => {
                           const expiryDate = new Date(drug.expiryDate);
                           const today = new Date();
-                          const monthsLeft = (expiryDate - today) / (1000 * 60 * 60 * 24 * 30);
+                          const monthsLeft = (expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 30);
 
                           if (monthsLeft < 1) {
                             return (

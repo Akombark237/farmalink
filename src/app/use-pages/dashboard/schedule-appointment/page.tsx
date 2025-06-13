@@ -18,6 +18,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
+interface TimeSlot {
+  date: string;
+  time: string;
+  available: boolean;
+}
+
+interface Doctor {
+  id: number;
+  name: string;
+  specialty: string;
+  rating: number;
+  experience: string;
+  location: string;
+  phone: string;
+  avatar: string;
+  availableSlots: TimeSlot[];
+}
+
 // Sample doctors data
 const doctors = [
   {
@@ -70,8 +88,8 @@ const doctors = [
 ];
 
 export default function ScheduleAppointmentPage() {
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [appointmentBooked, setAppointmentBooked] = useState(false);
   const [appointmentReason, setAppointmentReason] = useState('');

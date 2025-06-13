@@ -61,7 +61,7 @@ export default function PharmacyDashboard() {
     { id: "ORD-7832", customer: "Emma Johnson", items: 5, total: 67.25, status: "Completed", date: "2025-05-20" },
   ];
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "Completed": return "bg-green-100 text-green-800";
       case "Processing": return "bg-blue-100 text-blue-800";

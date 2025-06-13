@@ -28,7 +28,7 @@ export default function OpenStreetMapComponent({ locations, searchType, onLocati
     const initMap = async () => {
       try {
         const L = (await import('leaflet')).default;
-        await import('leaflet/dist/leaflet.css');
+        // CSS is imported in the component file
 
         if (!mapRef.current) return;
 
@@ -85,16 +85,16 @@ export default function OpenStreetMapComponent({ locations, searchType, onLocati
             const lng = locations[0].lng || (3.3792 + (Math.random() - 0.5) * 0.1);
             map.setView([lat, lng], 15);
           } else {
-            const group = new L.featureGroup(locations.map(loc => {
+            const group = new (L as any).featureGroup(locations.map((loc: any) => {
               const lat = loc.lat || (6.5244 + (Math.random() - 0.5) * 0.1);
               const lng = loc.lng || (3.3792 + (Math.random() - 0.5) * 0.1);
-              return L.marker([lat, lng]);
+              return (L as any).marker([lat, lng]);
             }));
             map.fitBounds(group.getBounds().pad(0.1));
           }
         }
 
-        window.handleMapClick = (id: string) => {
+        (window as any).handleMapClick = (id: string) => {
           const location = locations.find(l => l.id.toString() === id);
           if (location && onLocationClick) onLocationClick(location);
         };

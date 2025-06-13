@@ -51,7 +51,7 @@ const doctors = [
   }
 ];
 
-const sampleMessages = {
+const sampleMessages: {[key: number]: any[]} = {
   1: [
     {
       id: 1,
@@ -118,7 +118,7 @@ export default function MessageDoctorPage() {
     }
   };
 
-  const handleDoctorSelect = (doctor) => {
+  const handleDoctorSelect = (doctor: any) => {
     setSelectedDoctor(doctor);
     setMessages(sampleMessages[doctor.id] || []);
   };

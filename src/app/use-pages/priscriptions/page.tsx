@@ -91,21 +91,21 @@ const mockPrescriptions = [
 ];
 
 // Status badge component
-const StatusBadge = ({ status }) => {
-  const statusStyles = {
+const StatusBadge = ({ status }: { status: string }) => {
+  const statusStyles: {[key: string]: string} = {
     active: "bg-green-100 text-green-800 hover:bg-green-200",
     expired: "bg-red-100 text-red-800 hover:bg-red-200",
     pending: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
   };
 
-  const statusIcons = {
+  const statusIcons: {[key: string]: React.ReactNode} = {
     active: <CheckCircle2 className="w-4 h-4 mr-1" />,
     expired: <X className="w-4 h-4 mr-1" />,
     pending: <Clock className="w-4 h-4 mr-1" />
   };
 
   return (
-    <Badge className={`flex items-center ${statusStyles[status]}`}>
+    <Badge className={`flex items-center ${statusStyles[status] || ''}`}>
       {statusIcons[status]}
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </Badge>
@@ -113,7 +113,7 @@ const StatusBadge = ({ status }) => {
 };
 
 // Prescription card component
-const PrescriptionCard = ({ prescription, onDelete }) => {
+const PrescriptionCard = ({ prescription, onDelete }: { prescription: any, onDelete: (id: number) => void }) => {
   return (
     <Card className="mb-6 hover:shadow-md transition-shadow duration-300">
       <CardHeader className="pb-2">
@@ -177,13 +177,13 @@ const PrescriptionCard = ({ prescription, onDelete }) => {
 };
 
 // File upload component
-const FileUpload = ({ onUpload }) => {
+const FileUpload = ({ onUpload }: { onUpload: (files: File[]) => void }) => {
   const [dragging, setDragging] = useState(false);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(true);
   };
@@ -192,20 +192,20 @@ const FileUpload = ({ onUpload }) => {
     setDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
-    
+
     const droppedFiles = Array.from(e.dataTransfer.files);
     handleFiles(droppedFiles);
   };
 
-  const handleFileInput = (e) => {
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     handleFiles(selectedFiles);
   };
 
-  const handleFiles = (newFiles) => {
+  const handleFiles = (newFiles: File[]) => {
     // Filter for image files and PDFs
     const validFiles = newFiles.filter(file => 
       file.type.startsWith('image/') || file.type === 'application/pdf'
@@ -222,7 +222,7 @@ const FileUpload = ({ onUpload }) => {
     setFiles(prev => [...prev, ...validFiles]);
   };
 
-  const removeFile = (index) => {
+  const removeFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index));
   };
 
@@ -319,7 +319,7 @@ const FileUpload = ({ onUpload }) => {
 };
 
 export default function PrescriptionsPage() {
-  const [prescriptions, setPrescriptions] = useState([]);
+  const [prescriptions, setPrescriptions] = useState<any[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -329,7 +329,7 @@ export default function PrescriptionsPage() {
     }, 500);
   }, []);
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: number) => {
     setPrescriptions(prescriptions.filter(p => p.id !== id));
     toast({
       title: "Prescription deleted",
@@ -338,7 +338,7 @@ export default function PrescriptionsPage() {
     });
   };
 
-  const handleUpload = (files) => {
+  const handleUpload = (files: File[]) => {
     // Simulate adding new prescriptions
     const newPrescriptions = files.map((file, index) => ({
       id: `new-${Date.now()}-${index}`,
@@ -359,7 +359,7 @@ export default function PrescriptionsPage() {
     setPrescriptions(prev => [...newPrescriptions, ...prev]);
   };
 
-  const renderPrescriptionsByStatus = (status) => {
+  const renderPrescriptionsByStatus = (status: string) => {
     const filtered = prescriptions.filter(p => p.status === status);
     
     if (filtered.length === 0) {

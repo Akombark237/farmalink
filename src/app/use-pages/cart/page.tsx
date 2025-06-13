@@ -210,7 +210,7 @@ export default function Cart() {
               )}
 
               {/* Items grouped by pharmacy */}
-              {Object.values(itemsByPharmacy).map((pharmacy, index) => (
+              {Object.values(itemsByPharmacy).map((pharmacy: any, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
                   {/* Pharmacy header */}
                   <div className="bg-gray-50 px-6 py-4 border-b">
@@ -222,7 +222,7 @@ export default function Cart() {
 
                   {/* Items from this pharmacy */}
                   <div className="divide-y">
-                    {pharmacy.items.map((item) => (
+                    {pharmacy.items.map((item: any) => (
                       <div key={item.id} className="p-6">
                         <div className="flex flex-col sm:flex-row">
                           {/* Item image */}

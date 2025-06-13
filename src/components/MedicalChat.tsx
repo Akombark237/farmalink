@@ -374,7 +374,7 @@ const MedicalChat = forwardRef<MedicalChatRef, MedicalChatProps>(({
               </div>
             </div>
             <Button
-              onClick={sendMessage}
+              onClick={() => sendMessage()}
               disabled={!inputMessage.trim() || isLoading}
               className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-blue-500/20"
             >

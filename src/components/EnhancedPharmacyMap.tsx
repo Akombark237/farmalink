@@ -172,13 +172,13 @@ export default function EnhancedPharmacyMap({
     const initMap = async () => {
       try {
         const L = (await import('leaflet')).default;
-        await import('leaflet/dist/leaflet.css');
+        // CSS is imported in the component file
 
         if (!mapRef.current || mapInstanceRef.current) return;
 
         // Clear any existing map instance
-        if (mapRef.current._leaflet_id) {
-          mapRef.current._leaflet_id = null;
+        if ((mapRef.current as any)._leaflet_id) {
+          (mapRef.current as any)._leaflet_id = null;
         }
 
         const mapCenter = currentLocation || { lat: 3.8480, lng: 11.5021 };

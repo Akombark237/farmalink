@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Output configuration for Docker deployment
-  output: 'standalone',
+  // Remove standalone output for Render deployment
+  // output: 'standalone', // Only for Docker deployments
   
   // Optimize memory usage
   experimental: {
@@ -47,7 +47,13 @@ const nextConfig = {
 
   // Image optimization
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'via.placeholder.com', 'images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
   },
@@ -63,6 +69,17 @@ const nextConfig = {
     // Skip ESLint during build for faster compilation
     ignoreDuringBuilds: false,
   },
+
+  // Environment variables
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  },
+
+  // Trailing slash configuration
+  trailingSlash: false,
+
+  // Compression
+  compress: true,
 
 
 

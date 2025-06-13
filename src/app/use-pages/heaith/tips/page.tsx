@@ -5,6 +5,20 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+interface Article {
+  id: number;
+  title: string;
+  excerpt: string;
+  image: string;
+  category: string;
+  readTime: string;
+  authorName: string;
+  authorRole: string;
+  authorImage: string;
+  date: string;
+  featured: boolean;
+}
+
 // Mock data for health tips articles
 const MOCK_ARTICLES = [
   {
@@ -93,8 +107,8 @@ const CATEGORIES = ["All", "Wellness", "Medication", "Nutrition", "Cardiology", 
 export default function HealthTips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [articles, setArticles] = useState([]);
-  const [featuredArticles, setFeaturedArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -112,7 +126,7 @@ export default function HealthTips() {
     setFeaturedArticles(MOCK_ARTICLES.filter(article => article.featured));
   }, [searchTerm, activeCategory]);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would call an API to register the email
     setIsSubscribed(true);
@@ -122,12 +136,12 @@ export default function HealthTips() {
   };
 
   // Handle search input changes
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
   // Function to render placeholder image for demo purposes
-  const renderImage = (src, alt, className) => {
+  const renderImage = (src: string, alt: string, className: string) => {
     // In a real app, this would use actual images
     return (
       <div className={`bg-gray-200 ${className} flex items-center justify-center overflow-hidden`}>

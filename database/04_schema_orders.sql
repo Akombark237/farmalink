@@ -102,7 +102,7 @@ CREATE TABLE payments (
     payment_method VARCHAR(50) NOT NULL, -- 'credit_card', 'debit_card', 'cash', 'insurance', 'hsa', 'fsa'
     payment_status payment_status DEFAULT 'pending',
     amount DECIMAL(10,2) NOT NULL,
-    currency VARCHAR(3) DEFAULT 'USD',
+    currency VARCHAR(3) DEFAULT 'XAF', -- Central African CFA franc
     
     -- Payment processor information
     processor VARCHAR(50), -- 'stripe', 'paypal', 'square', etc.

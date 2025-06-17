@@ -19,28 +19,29 @@ import {
     XCircle
 } from 'lucide-react';
 import { useState } from 'react';
-import { formatCfa } from '@/utils/currency';
+import { formatCfa, convertUsdToCfa } from '@/utils/currency';
+import PWAStatus from '@/components/PWAStatus';
 
 export default function AdminDashboard() {
   const [timeRange, setTimeRange] = useState('7d');
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Mock data for demonstration
+  // Mock data for demonstration (revenue in CFA)
   const stats = {
     totalUsers: 12547,
     activePharmacies: 324,
     totalDrugs: 8964,
     todayOrders: 189,
-    totalRevenue: 234567,
+    totalRevenue: convertUsdToCfa(234567), // 140,740,200 CFA
     pendingApprovals: 23,
     userGrowth: 12.5,
     revenueGrowth: 8.3
   };
 
   const recentOrders = [
-    { id: '#ORD-001', patient: 'John Doe', pharmacy: 'MedPlus Pharmacy', amount: 25000, status: 'completed', time: '2 hours ago' },
-    { id: '#ORD-002', patient: 'Sarah Wilson', pharmacy: 'HealthCare Central', amount: 48500, status: 'processing', time: '4 hours ago' },
-    { id: '#ORD-003', patient: 'Mike Johnson', pharmacy: 'City Pharmacy', amount: 12750, status: 'pending', time: '6 hours ago' }
+    { id: '#ORD-001', patient: 'John Doe', pharmacy: 'MedPlus Pharmacy', amount: convertUsdToCfa(45.99), status: 'completed', time: '2 hours ago' },
+    { id: '#ORD-002', patient: 'Sarah Wilson', pharmacy: 'HealthCare Central', amount: convertUsdToCfa(89.50), status: 'processing', time: '4 hours ago' },
+    { id: '#ORD-003', patient: 'Mike Johnson', pharmacy: 'City Pharmacy', amount: convertUsdToCfa(23.75), status: 'pending', time: '6 hours ago' }
   ];
 
   const pendingPharmacies = [
@@ -51,8 +52,8 @@ export default function AdminDashboard() {
 
   interface StatCardProps {
     title: string;
-    value: string;
-    icon: React.ComponentType<any>;
+    value: string | number;
+    icon: React.ComponentType<{ className?: string }>;
     change?: number;
     changeType?: 'positive' | 'negative';
   }
@@ -151,45 +152,6 @@ export default function AdminDashboard() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Quick Navigation */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-          <a href="/admin_panel/admin_pharmacy" className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center group">
-            <div className="p-3 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors mb-3">
-              <Building2 className="w-6 h-6 text-blue-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">Pharmacies</span>
-          </a>
-          <a href="/admin_panel/admin_user" className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center group">
-            <div className="p-3 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors mb-3">
-              <Users className="w-6 h-6 text-green-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">Users</span>
-          </a>
-          <a href="/admin_panel/admin_drogs" className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center group">
-            <div className="p-3 bg-purple-50 rounded-lg group-hover:bg-purple-100 transition-colors mb-3">
-              <Pill className="w-6 h-6 text-purple-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">Medications</span>
-          </a>
-          <a href="/admin_panel/admin_reports" className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center group">
-            <div className="p-3 bg-orange-50 rounded-lg group-hover:bg-orange-100 transition-colors mb-3">
-              <BarChart3 className="w-6 h-6 text-orange-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">Reports</span>
-          </a>
-          <a href="/admin_panel/admin_setting" className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center group">
-            <div className="p-3 bg-gray-50 rounded-lg group-hover:bg-gray-100 transition-colors mb-3">
-              <Activity className="w-6 h-6 text-gray-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">Settings</span>
-          </a>
-          <a href="/use-pages/dashboard" className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center group">
-            <div className="p-3 bg-indigo-50 rounded-lg group-hover:bg-indigo-100 transition-colors mb-3">
-              <Eye className="w-6 h-6 text-indigo-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">User View</span>
-          </a>
-        </div>
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard 
@@ -198,22 +160,22 @@ export default function AdminDashboard() {
             icon={Users} 
             change={stats.userGrowth}
           />
-          <StatCard
-            title="Active Pharmacies"
-            value={stats.activePharmacies.toString()}
-            icon={Building2}
+          <StatCard 
+            title="Active Pharmacies" 
+            value={stats.activePharmacies} 
+            icon={Building2} 
             change={5.2}
           />
-          <StatCard
-            title="Total Drugs Listed"
-            value={stats.totalDrugs.toLocaleString()}
-            icon={Pill}
+          <StatCard 
+            title="Total Drugs Listed" 
+            value={stats.totalDrugs.toLocaleString()} 
+            icon={Pill} 
             change={3.7}
           />
-          <StatCard
-            title="Today's Orders"
-            value={stats.todayOrders.toString()}
-            icon={ShoppingCart}
+          <StatCard 
+            title="Today's Orders" 
+            value={stats.todayOrders} 
+            icon={ShoppingCart} 
             change={15.4}
           />
         </div>
@@ -225,7 +187,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-semibold text-gray-900">Revenue Overview</h3>
               <div className="flex items-center space-x-2">
                 <DollarSign className="w-5 h-5 text-green-500" />
-                <span className="text-2xl font-bold text-gray-900">{formatCfa(stats.totalRevenue * 600)}</span>
+                <span className="text-2xl font-bold text-gray-900">{formatCfa(stats.totalRevenue)}</span>
                 <span className="text-sm text-green-600 font-medium">+{stats.revenueGrowth}%</span>
               </div>
             </div>
@@ -243,12 +205,12 @@ export default function AdminDashboard() {
               <AlertTriangle className="w-5 h-5 text-orange-500" />
             </div>
             <div className="space-y-3">
-              <a href="/admin_panel/admin_pharmacy" className="flex items-center justify-between p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
-                <span className="text-sm font-medium text-gray-900">Manage Pharmacies</span>
+              <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                <span className="text-sm font-medium text-gray-900">Pending Approvals</span>
                 <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
                   {stats.pendingApprovals}
                 </span>
-              </a>
+              </div>
               <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-900">Active Reports</span>
                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">7</span>
@@ -256,6 +218,34 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-900">System Status</span>
                 <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">Healthy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* PWA Status Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-1">
+            <PWAStatus showDetails={true} />
+          </div>
+          <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">PWA Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <h4 className="font-medium text-blue-900 mb-2">📱 Mobile App Experience</h4>
+                <p className="text-sm text-blue-700">Users can install PharmaLink as a native app on their devices for faster access and better performance.</p>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg">
+                <h4 className="font-medium text-green-900 mb-2">🔔 Push Notifications</h4>
+                <p className="text-sm text-green-700">Send real-time notifications for order updates, prescription reminders, and pharmacy promotions.</p>
+              </div>
+              <div className="p-4 bg-purple-50 rounded-lg">
+                <h4 className="font-medium text-purple-900 mb-2">📶 Offline Support</h4>
+                <p className="text-sm text-purple-700">Critical features work offline with automatic sync when connection is restored.</p>
+              </div>
+              <div className="p-4 bg-orange-50 rounded-lg">
+                <h4 className="font-medium text-orange-900 mb-2">🔄 Background Sync</h4>
+                <p className="text-sm text-orange-700">Actions taken offline are automatically synchronized when the user comes back online.</p>
               </div>
             </div>
           </div>
@@ -315,10 +305,10 @@ export default function AdminDashboard() {
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Top Pharmacies</h4>
                   <div className="space-y-3">
                     {[
-                      { name: 'MedPlus Pharmacy', revenue: 2850000 },
-                      { name: 'HealthCare Central', revenue: 2340000 },
-                      { name: 'City Pharmacy', revenue: 1890000 },
-                      { name: 'Quick Meds', revenue: 1650000 }
+                      { name: 'MedPlus Pharmacy', revenue: convertUsdToCfa(4250) },
+                      { name: 'HealthCare Central', revenue: convertUsdToCfa(3890) },
+                      { name: 'City Pharmacy', revenue: convertUsdToCfa(3420) },
+                      { name: 'Quick Meds', revenue: convertUsdToCfa(2980) }
                     ].map((pharmacy, index) => (
                       <div key={pharmacy.name} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                         <div className="flex items-center space-x-3">
@@ -412,4 +402,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-

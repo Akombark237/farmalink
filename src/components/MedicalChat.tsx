@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Send, Bot, User, Loader2, Trash2, Settings, X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
   role: 'user' | 'model';
@@ -188,7 +190,7 @@ const MedicalChat = forwardRef<MedicalChatRef, MedicalChatProps>(({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -198,16 +200,26 @@ const MedicalChat = forwardRef<MedicalChatRef, MedicalChatProps>(({
   const formatMessage = (text: string) => {
     // Remove reference citations like [1], [2], etc.
     const cleanText = text.replace(/\[\d+\]/g, '');
-    
-    // Simple formatting for now - can be enhanced later
+
     return (
-      <div className="prose prose-sm max-w-none text-gray-800 leading-relaxed">
-        {cleanText.split('\n').map((line, index) => (
-          <p key={index} className="mb-2 last:mb-0 text-sm leading-relaxed">
-            {line}
-          </p>
-        ))}
-      </div>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        className="prose prose-sm max-w-none text-gray-800 leading-relaxed"
+        components={{
+          p: ({ children }) => <p className="mb-3 last:mb-0 text-sm leading-relaxed">{children}</p>,
+          ul: ({ children }) => <ul className="mb-3 pl-4 space-y-1">{children}</ul>,
+          ol: ({ children }) => <ol className="mb-3 pl-4 space-y-1">{children}</ol>,
+          li: ({ children }) => <li className="text-sm leading-relaxed">{children}</li>,
+          strong: ({ children }) => <strong className="font-semibold text-blue-700">{children}</strong>,
+          em: ({ children }) => <em className="italic text-gray-600">{children}</em>,
+          code: ({ children }) => <code className="bg-blue-50 text-blue-800 px-2 py-1 rounded text-xs font-mono">{children}</code>,
+          h1: ({ children }) => <h1 className="text-lg font-bold text-gray-900 mb-2">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-base font-semibold text-gray-800 mb-2">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-sm font-semibold text-gray-700 mb-1">{children}</h3>,
+        }}
+      >
+        {cleanText}
+      </ReactMarkdown>
     );
   };
 
@@ -267,6 +279,44 @@ const MedicalChat = forwardRef<MedicalChatRef, MedicalChatProps>(({
                 />
                 <span className="font-medium text-gray-700">Include References</span>
               </label>
+            </div>
+            <div className="grid grid-cols-3 gap-3 text-sm">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Detail Level</label>
+                <select
+                  value={preferences.detailLevel}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, detailLevel: e.target.value as any }))}
+                  className="w-full px-3 py-2 bg-white/80 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                >
+                  <option value="simple">Simple</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="detailed">Detailed</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Creativity</label>
+                <select
+                  value={preferences.creativity}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, creativity: e.target.value as any }))}
+                  className="w-full px-3 py-2 bg-white/80 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                >
+                  <option value="conservative">Conservative</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="creative">Creative</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Response Length</label>
+                <select
+                  value={preferences.responseLength}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, responseLength: e.target.value as any }))}
+                  className="w-full px-3 py-2 bg-white/80 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                >
+                  <option value="short">Short</option>
+                  <option value="medium">Medium</option>
+                  <option value="long">Long</option>
+                </select>
+              </div>
             </div>
           </div>
         )}
@@ -332,8 +382,8 @@ const MedicalChat = forwardRef<MedicalChatRef, MedicalChatProps>(({
                   <div className="flex items-center space-x-3">
                     <div className="flex space-x-1">
                       <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-bounce"></div>
-                      <div className="w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      <div className="w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                     <span className="text-sm text-gray-700 font-medium">Qala-Lwazi is thinking...</span>
                   </div>
@@ -364,7 +414,7 @@ const MedicalChat = forwardRef<MedicalChatRef, MedicalChatProps>(({
                 ref={inputRef}
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyPress={handleKeyPress}
                 placeholder="Ask about medications, symptoms, or health conditions..."
                 disabled={isLoading}
                 className="pr-16 py-4 rounded-2xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-2 resize-none bg-white/80 backdrop-blur-sm shadow-lg transition-all duration-200 text-gray-700 placeholder-gray-500"

@@ -1,0 +1,11 @@
+# This is a placeholder for the PWA icon
+# In a real implementation, you would place actual PNG icon files here
+# For now, we'll create a simple SVG that can be converted to PNG
+
+# You can use online tools like:
+# - https://realfavicongenerator.net/
+# - https://www.favicon-generator.org/
+# - Or create custom icons with your PharmaLink branding
+
+# The icon should be 192x192 pixels and represent your PharmaLink brand
+# Consider using your logo with a medical cross or pharmacy symbol

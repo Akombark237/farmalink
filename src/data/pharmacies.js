@@ -1,5 +1,6 @@
 // JavaScript version of pharmacy data for migration script
 // Comprehensive database of real pharmacies in Yaoundé, Cameroon
+// All prices are in CFA Franc (Central African CFA franc)
 
 export const YAUNDE_PHARMACIES = [
   {
@@ -11,10 +12,10 @@ export const YAUNDE_PHARMACIES = [
     isOpenNow: true,
     location: { lat: 3.8480, lng: 11.5021 },
     medications: [
-      { id: '1', name: 'Paracetamol', price: 500, inStock: true, quantity: 50 },
-      { id: '2', name: 'Amoxicillin', price: 2500, inStock: true, quantity: 30 },
-      { id: '3', name: 'Ibuprofen', price: 750, inStock: true, quantity: 25 },
-      { id: '4', name: 'Omeprazole', price: 2200, inStock: true, quantity: 20 }
+      { id: '1', name: 'Paracetamol', price: 500, inStock: true, quantity: 50 }, // 500 CFA
+      { id: '2', name: 'Amoxicillin', price: 2500, inStock: true, quantity: 30 }, // 2,500 CFA
+      { id: '3', name: 'Ibuprofen', price: 750, inStock: true, quantity: 25 }, // 750 CFA
+      { id: '4', name: 'Omeprazole', price: 2200, inStock: true, quantity: 20 } // 2,200 CFA
     ]
   },
   {

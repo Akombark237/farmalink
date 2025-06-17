@@ -25,7 +25,7 @@ export default function AdminSettings() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
 
-  const [settings, setSettings] = useState<{[key: string]: any}>({
+  const [settings, setSettings] = useState({
     // General Settings
     platformName: 'PharmConnect',
     platformDescription: 'Your trusted pharmacy network platform',
@@ -329,7 +329,7 @@ export default function AdminSettings() {
                       if (e.target.checked) {
                         setSettings({...settings, allowedFileTypes: [...settings.allowedFileTypes, type]});
                       } else {
-                        setSettings({...settings, allowedFileTypes: settings.allowedFileTypes.filter((t: string) => t !== type)});
+                        setSettings({...settings, allowedFileTypes: settings.allowedFileTypes.filter(t => t !== type)});
                       }
                     }}
                     className="text-indigo-600 focus:ring-indigo-500"

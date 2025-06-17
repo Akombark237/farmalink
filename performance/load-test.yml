@@ -1,0 +1,157 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm-up"
+    # Ramp-up phase
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+      name: "Ramp-up load"
+    # Sustained load phase
+    - duration: 300
+      arrivalRate: 50
+      name: "Sustained load"
+    # Peak load phase
+    - duration: 120
+      arrivalRate: 50
+      rampTo: 100
+      name: "Peak load"
+    # Cool-down phase
+    - duration: 60
+      arrivalRate: 100
+      rampTo: 5
+      name: "Cool-down"
+  
+  # Performance thresholds
+  ensure:
+    thresholds:
+      - http.response_time.p95: 2000  # 95% of requests should complete within 2s
+      - http.response_time.p99: 5000  # 99% of requests should complete within 5s
+      - http.request_rate: 45         # Should handle at least 45 requests per second
+      - http.codes.200: 95            # 95% success rate
+      - http.codes.500: 1             # Less than 1% server errors
+
+  # HTTP settings
+  http:
+    timeout: 30
+    pool: 50
+
+  # Variables for test data
+  variables:
+    testUsers:
+      - "test1@pharmalink.com"
+      - "test2@pharmalink.com"
+      - "test3@pharmalink.com"
+    medications:
+      - "paracetamol"
+      - "ibuprofen"
+      - "amoxicillin"
+      - "aspirin"
+    pharmacyIds:
+      - "1"
+      - "2"
+      - "3"
+
+scenarios:
+  # Homepage load test
+  - name: "Homepage Load"
+    weight: 20
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - json: "$.success"
+              as: "homeSuccess"
+      - think: 2
+
+  # Search functionality test
+  - name: "Medication Search"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/medications"
+          qs:
+            search: "{{ medications[Math.floor(Math.random() * medications.length)] }}"
+            limit: 20
+          capture:
+            - json: "$.data.length"
+              as: "searchResults"
+      - think: 3
+
+  # Pharmacy lookup test
+  - name: "Pharmacy Lookup"
+    weight: 25
+    flow:
+      - get:
+          url: "/api/pharmacies"
+          qs:
+            lat: 3.848
+            lng: 11.502
+            radius: 5
+          capture:
+            - json: "$.data"
+              as: "nearbyPharmacies"
+      - think: 2
+
+  # User authentication test
+  - name: "User Authentication"
+    weight: 15
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ testUsers[Math.floor(Math.random() * testUsers.length)] }}"
+            password: "testpassword123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      - think: 1
+
+  # Medical chat test
+  - name: "Medical Chat"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/medical-chat"
+          json:
+            message: "What is {{ medications[Math.floor(Math.random() * medications.length)] }} used for?"
+            context: "general"
+          capture:
+            - json: "$.response"
+              as: "chatResponse"
+      - think: 5
+
+# Custom functions for complex scenarios
+functions:
+  generateRandomUser: |
+    function(context, events, done) {
+      context.vars.randomEmail = `test${Math.floor(Math.random() * 1000)}@pharmalink.com`;
+      context.vars.randomName = `Test User ${Math.floor(Math.random() * 1000)}`;
+      return done();
+    }
+
+  simulateUserBehavior: |
+    function(context, events, done) {
+      // Simulate realistic user behavior patterns
+      const actions = ['search', 'browse', 'cart', 'checkout'];
+      context.vars.userAction = actions[Math.floor(Math.random() * actions.length)];
+      context.vars.thinkTime = Math.floor(Math.random() * 5) + 1; // 1-5 seconds
+      return done();
+    }
+
+# Plugins for enhanced reporting
+plugins:
+  expect: {}
+  metrics-by-endpoint: {}
+  
+# Custom metrics
+metrics:
+  - name: "search_response_time"
+    unit: "ms"
+  - name: "auth_success_rate"
+    unit: "percent"
+  - name: "chat_response_quality"
+    unit: "score"

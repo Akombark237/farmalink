@@ -5,7 +5,7 @@ import React from 'react';
 // Simple placeholder components for charts
 // In a real application, you would use a charting library like recharts, chart.js, etc.
 
-export const AreaChart = ({ data, className }: { data?: any; className?: string }) => {
+export const AreaChart = ({ data: _data, className }: { data?: any; className?: string }) => {
   return (
     <div className={`bg-slate-50 rounded-md flex items-center justify-center h-full ${className}`}>
       <div className="text-center text-gray-500">
@@ -16,7 +16,7 @@ export const AreaChart = ({ data, className }: { data?: any; className?: string 
   );
 };
 
-export const BarChart = ({ data, className }: { data?: any; className?: string }) => {
+export const BarChart = ({ data: _data, className }: { data?: any; className?: string }) => {
   return (
     <div className={`bg-slate-50 rounded-md flex items-center justify-center h-full ${className}`}>
       <div className="text-center text-gray-500">
@@ -27,7 +27,7 @@ export const BarChart = ({ data, className }: { data?: any; className?: string }
   );
 };
 
-export const DonutChart = ({ data, className }: { data?: any; className?: string }) => {
+export const DonutChart = ({ data: _data, className }: { data?: any; className?: string }) => {
   return (
     <div className={`bg-slate-50 rounded-md flex items-center justify-center h-full ${className}`}>
       <div className="text-center text-gray-500">

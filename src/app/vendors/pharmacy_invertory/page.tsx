@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { formatCfa } from '@/utils/currency';
 
 export default function PharmacyInventory() {
   // Define types for our data
@@ -122,7 +121,7 @@ export default function PharmacyInventory() {
           category: 'Analgesics',
           manufacturer: 'PainRelief Inc',
           stock: 212,
-          price: 5394,
+          price: 8.99,
           minStock: 50,
           expiryDate: '2026-08-22',
           sku: 'IBU-200-789',
@@ -136,7 +135,7 @@ export default function PharmacyInventory() {
           category: 'Antihistamines',
           manufacturer: 'AllerCare',
           stock: 18,
-          price: 6750,
+          price: 11.25,
           minStock: 20,
           expiryDate: '2025-11-30',
           sku: 'LOR-10-101',
@@ -150,7 +149,7 @@ export default function PharmacyInventory() {
           category: 'Antidiabetics',
           manufacturer: 'DiabeCare',
           stock: 0,
-          price: 8250,
+          price: 13.75,
           minStock: 15,
           expiryDate: '2026-04-17',
           sku: 'MET-500-202',
@@ -164,7 +163,7 @@ export default function PharmacyInventory() {
           category: 'Gastrointestinals',
           manufacturer: 'GastroHealth',
           stock: 95,
-          price: 10794,
+          price: 17.99,
           minStock: 25,
           expiryDate: '2025-09-10',
           sku: 'OMP-20-303',
@@ -178,7 +177,7 @@ export default function PharmacyInventory() {
           category: 'Vitamins & Supplements',
           manufacturer: 'VitaWell',
           stock: 167,
-          price: 5700,
+          price: 9.50,
           minStock: 30,
           expiryDate: '2027-01-25',
           sku: 'VTD-1000-404',
@@ -192,7 +191,7 @@ export default function PharmacyInventory() {
           category: 'Cardiovascular',
           manufacturer: 'CardioPharm',
           stock: 12,
-          price: 13794,
+          price: 22.99,
           minStock: 20,
           expiryDate: '2025-10-05',
           sku: 'ATR-40-505',
@@ -302,20 +301,17 @@ export default function PharmacyInventory() {
     e.preventDefault();
 
     // Mock adding a drug (in real app, this would send data to an API)
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-
-    const newDrug = {
+    const newDrug: InventoryItem = {
       id: inventory.length + 1,
-      name: formData.get('drugName') as string,
-      category: formData.get('category') as string,
-      manufacturer: formData.get('manufacturer') as string,
-      stock: parseInt(formData.get('stock') as string, 10),
-      price: parseFloat(formData.get('price') as string),
-      minStock: parseInt(formData.get('minStock') as string, 10),
-      expiryDate: formData.get('expiryDate') as string,
-      sku: formData.get('sku') as string,
-      description: formData.get('description') as string,
+      name: (e.target as any).drugName.value,
+      category: (e.target as any).category.value,
+      manufacturer: (e.target as any).manufacturer.value,
+      stock: parseInt((e.target as any).stock.value, 10),
+      price: parseFloat((e.target as any).price.value),
+      minStock: parseInt((e.target as any).minStock.value, 10),
+      expiryDate: (e.target as any).expiryDate.value,
+      sku: (e.target as any).sku.value,
+      description: (e.target as any).description.value,
       lastUpdated: new Date().toISOString().split('T')[0],
       image: '/api/placeholder/60/60'
     };
@@ -338,20 +334,17 @@ export default function PharmacyInventory() {
 
     if (!currentDrug) return;
 
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-
     const updatedDrug: InventoryItem = {
       ...currentDrug,
-      name: formData.get('drugName') as string,
-      category: formData.get('category') as string,
-      manufacturer: formData.get('manufacturer') as string,
-      stock: parseInt(formData.get('stock') as string, 10),
-      price: parseFloat(formData.get('price') as string),
-      minStock: parseInt(formData.get('minStock') as string, 10),
-      expiryDate: formData.get('expiryDate') as string,
-      sku: formData.get('sku') as string,
-      description: formData.get('description') as string,
+      name: (e.target as any).drugName.value,
+      category: (e.target as any).category.value,
+      manufacturer: (e.target as any).manufacturer.value,
+      stock: parseInt((e.target as any).stock.value, 10),
+      price: parseFloat((e.target as any).price.value),
+      minStock: parseInt((e.target as any).minStock.value, 10),
+      expiryDate: (e.target as any).expiryDate.value,
+      sku: (e.target as any).sku.value,
+      description: (e.target as any).description.value,
       lastUpdated: new Date().toISOString().split('T')[0]
     };
 
@@ -647,13 +640,13 @@ export default function PharmacyInventory() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatCfa(drug.price)}
+                        ${drug.price.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {(() => {
                           const expiryDate = new Date(drug.expiryDate);
                           const today = new Date();
-                          const monthsLeft = (expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 30);
+                          const monthsLeft = (expiryDate - today) / (1000 * 60 * 60 * 24 * 30);
 
                           if (monthsLeft < 1) {
                             return (
@@ -830,7 +823,7 @@ export default function PharmacyInventory() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (CFA)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
                   <input
                     type="number"
                     name="price"
@@ -963,7 +956,7 @@ export default function PharmacyInventory() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (CFA)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
                   <input
                     type="number"
                     name="price"

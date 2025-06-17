@@ -1,0 +1,8 @@
+# This is a placeholder for the favicon.ico file
+# In a real implementation, you would place an actual ICO file here
+# You can generate favicons from your SVG icon using online tools like:
+# - https://realfavicongenerator.net/
+# - https://www.favicon-generator.org/
+# - https://favicon.io/
+
+# For now, browsers will use the default favicon or the PNG icons specified in the manifest

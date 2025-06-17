@@ -4,23 +4,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-
-interface Article {
-  id: number;
-  title: string;
-  excerpt: string;
-  image: string;
-  category: string;
-  readTime: string;
-  authorName: string;
-  authorRole: string;
-  authorImage: string;
-  date: string;
-  featured: boolean;
-}
+import { HealthArticle } from '@/types';
 
 // Mock data for health tips articles
-const MOCK_ARTICLES = [
+const MOCK_ARTICLES: HealthArticle[] = [
   {
     id: 1,
     title: "Seasonal Allergies: 5 Natural Remedies That Actually Work",
@@ -107,8 +94,8 @@ const CATEGORIES = ["All", "Wellness", "Medication", "Nutrition", "Cardiology", 
 export default function HealthTips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<HealthArticle[]>([]);
+  const [featuredArticles, setFeaturedArticles] = useState<HealthArticle[]>([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -157,21 +144,21 @@ export default function HealthTips() {
         <meta name="description" content="Expert health tips, medication guides, and wellness advice from trusted pharmacists and healthcare professionals." />
       </Head>
 
-      <main className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+      <main className="min-h-screen bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-sm content-over-background">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
+        <section className="relative bg-gradient-to-r from-blue-600/90 to-indigo-700/90 text-white py-16 backdrop-blur-sm">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-indigo-700/90"></div>
             {/* SVG Background Pattern */}
             <div className="absolute inset-0 opacity-10">
               <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                  <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <path d="M0,0 L8,0 L8,8 L0,8 Z" fill="none" stroke="white" strokeWidth="0.5" />
+                  </pattern>
+                </defs>
                 <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="url(#grid)" />
               </svg>
-              <defs>
-                <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
-                  <path d="M0,0 L8,0 L8,8 L0,8 Z" fill="none" stroke="white" strokeWidth="0.5" />
-                </pattern>
-              </defs>
             </div>
           </div>
 
@@ -518,17 +505,28 @@ export default function HealthTips() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-3">Have a Health Question?</h2>
             <p className="text-xl text-white/80 mb-6 max-w-2xl mx-auto">
-              Our team of professional pharmacists is ready to answer your medication and health-related questions.
+              Get instant answers from our AI medical assistant or contact our team of professional pharmacists.
             </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center bg-white text-blue-700 font-medium py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors"
-            >
-              Ask a Pharmacist
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/use-pages/medical-assistant"
+                className="inline-flex items-center bg-white text-blue-700 font-medium py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Ask Qala-Lwazi AI
+              </Link>
+              <Link
+                href="/public/contact"
+                className="inline-flex items-center bg-transparent border-2 border-white text-white font-medium py-3 px-6 rounded-lg hover:bg-white hover:text-blue-700 transition-colors"
+              >
+                Contact Pharmacist
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
       </main>

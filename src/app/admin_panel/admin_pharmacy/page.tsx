@@ -22,29 +22,14 @@ import {
     XCircle
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-interface Pharmacy {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  status: string;
-  registrationDate: string;
-  revenue: number;
-  orders: number;
-  rating: number;
-  inventory: number;
-  hours: string;
-  license: string;
-  documents: string[];
-}
+import { Pharmacy, PharmacyStatus } from '@/types';
+import { getStatusColor } from '@/utils/helpers';
 
 const AdminPharmacies = () => {
   const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
   const [filteredPharmacies, setFilteredPharmacies] = useState<Pharmacy[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedPharmacy, setSelectedPharmacy] = useState<Pharmacy | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,89 +38,101 @@ const AdminPharmacies = () => {
 
   // Sample pharmacy data
   useEffect(() => {
-    const sampleData = [
+    const sampleData: Pharmacy[] = [
       {
-        id: 1,
+        id: "1",
         name: "MediCare Plus Pharmacy",
         email: "contact@medicareplus.com",
         phone: "+1 (555) 123-4567",
         address: "1234 Health Street, Medical District, NY 10001",
-        status: "pending",
-        registrationDate: "2024-05-20",
+        status: "pending" as PharmacyStatus,
         revenue: 45680,
         orders: 234,
         rating: 4.8,
         inventory: 1250,
         hours: "8:00 AM - 10:00 PM",
         license: "PH-NY-2024-001234",
-        documents: ["license.pdf", "insurance.pdf", "certification.pdf"]
+        documents: [
+          { id: "1", name: "license.pdf", type: "application/pdf", url: "/docs/license.pdf", uploadedAt: new Date() },
+          { id: "2", name: "insurance.pdf", type: "application/pdf", url: "/docs/insurance.pdf", uploadedAt: new Date() },
+          { id: "3", name: "certification.pdf", type: "application/pdf", url: "/docs/certification.pdf", uploadedAt: new Date() }
+        ]
       },
       {
-        id: 2,
+        id: "2",
         name: "QuickDrug Dispensary",
         email: "admin@quickdrug.com",
         phone: "+1 (555) 987-6543",
         address: "5678 Remedy Ave, Healthcare Plaza, CA 90210",
-        status: "approved",
-        registrationDate: "2024-03-15",
+        status: "approved" as PharmacyStatus,
         revenue: 78920,
         orders: 456,
         rating: 4.6,
         inventory: 2100,
         hours: "24/7",
         license: "PH-CA-2024-005678",
-        documents: ["license.pdf", "insurance.pdf"]
+        documents: [
+          { id: "4", name: "license.pdf", type: "application/pdf", url: "/docs/license.pdf", uploadedAt: new Date() },
+          { id: "5", name: "insurance.pdf", type: "application/pdf", url: "/docs/insurance.pdf", uploadedAt: new Date() }
+        ]
       },
       {
-        id: 3,
+        id: "3",
         name: "Community Health Pharmacy",
         email: "info@communityhealth.org",
         phone: "+1 (555) 456-7890",
         address: "9012 Wellness Blvd, Community Center, TX 75001",
-        status: "rejected",
-        registrationDate: "2024-05-18",
+        status: "rejected" as PharmacyStatus,
         revenue: 0,
         orders: 0,
         rating: 0,
         inventory: 0,
         hours: "9:00 AM - 6:00 PM",
         license: "PH-TX-2024-009012",
-        documents: ["license.pdf"]
+        documents: [
+          { id: "6", name: "license.pdf", type: "application/pdf", url: "/docs/license.pdf", uploadedAt: new Date() }
+        ]
       },
       {
-        id: 4,
+        id: "4",
         name: "PharmaMax Solutions",
         email: "support@pharmamax.net",
         phone: "+1 (555) 321-0987",
         address: "3456 Medicine Way, Drug District, FL 33101",
-        status: "approved",
-        registrationDate: "2024-02-10",
+        status: "approved" as PharmacyStatus,
         revenue: 125340,
         orders: 789,
         rating: 4.9,
         inventory: 3200,
         hours: "7:00 AM - 11:00 PM",
         license: "PH-FL-2024-003456",
-        documents: ["license.pdf", "insurance.pdf", "certification.pdf", "inspection.pdf"]
+        documents: [
+          { id: "7", name: "license.pdf", type: "application/pdf", url: "/docs/license.pdf", uploadedAt: new Date() },
+          { id: "8", name: "insurance.pdf", type: "application/pdf", url: "/docs/insurance.pdf", uploadedAt: new Date() },
+          { id: "9", name: "certification.pdf", type: "application/pdf", url: "/docs/certification.pdf", uploadedAt: new Date() },
+          { id: "10", name: "inspection.pdf", type: "application/pdf", url: "/docs/inspection.pdf", uploadedAt: new Date() }
+        ]
       },
       {
-        id: 5,
+        id: "5",
         name: "NeighborRx Pharmacy",
         email: "hello@neighborrx.com",
         phone: "+1 (555) 654-3210",
         address: "7890 Local Street, Suburb Area, WA 98101",
-        status: "suspended",
-        registrationDate: "2024-04-05",
+        status: "suspended" as PharmacyStatus,
         revenue: 23450,
         orders: 123,
         rating: 3.8,
         inventory: 890,
         hours: "10:00 AM - 8:00 PM",
         license: "PH-WA-2024-007890",
-        documents: ["license.pdf", "insurance.pdf"]
+        documents: [
+          { id: "11", name: "license.pdf", type: "application/pdf", url: "/docs/license.pdf", uploadedAt: new Date() },
+          { id: "12", name: "insurance.pdf", type: "application/pdf", url: "/docs/insurance.pdf", uploadedAt: new Date() }
+        ]
       }
     ];
-    
+
     setPharmacies(sampleData);
     setFilteredPharmacies(sampleData);
   }, []);
@@ -143,37 +140,27 @@ const AdminPharmacies = () => {
   // Filter and search logic
   useEffect(() => {
     let filtered = pharmacies;
-    
+
     if (searchTerm) {
       filtered = filtered.filter(pharmacy =>
         pharmacy.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pharmacy.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (pharmacy.email && pharmacy.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
         pharmacy.address.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     if (statusFilter !== 'all') {
       filtered = filtered.filter(pharmacy => pharmacy.status === statusFilter);
     }
-    
+
     setFilteredPharmacies(filtered);
   }, [searchTerm, statusFilter, pharmacies]);
 
-  const getStatusColor = (status: string) => {
-    const colors: {[key: string]: string} = {
-      pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      approved: 'bg-green-100 text-green-800 border-green-200',
-      rejected: 'bg-red-100 text-red-800 border-red-200',
-      suspended: 'bg-orange-100 text-orange-800 border-orange-200'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
-
-  const handleStatusChange = async (pharmacyId: number, newStatus: string) => {
+  const handleStatusChange = async (pharmacyId: string, newStatus: PharmacyStatus) => {
     setLoading(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     setPharmacies(prev => prev.map(pharmacy =>
       pharmacy.id === pharmacyId ? { ...pharmacy, status: newStatus } : pharmacy
     ));
@@ -186,8 +173,8 @@ const AdminPharmacies = () => {
     approved: pharmacies.filter(p => p.status === 'approved').length,
     rejected: pharmacies.filter(p => p.status === 'rejected').length,
     suspended: pharmacies.filter(p => p.status === 'suspended').length,
-    totalRevenue: pharmacies.reduce((sum, p) => sum + p.revenue, 0),
-    totalOrders: pharmacies.reduce((sum, p) => sum + p.orders, 0)
+    totalRevenue: pharmacies.reduce((sum, p) => sum + (p.revenue || 0), 0),
+    totalOrders: pharmacies.reduce((sum, p) => sum + (p.orders || 0), 0)
   };
 
   const paginatedPharmacies = filteredPharmacies.slice(
@@ -351,8 +338,8 @@ const AdminPharmacies = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-bold text-gray-900">{pharmacy.name}</h3>
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(pharmacy.status)}`}>
-                          {pharmacy.status.charAt(0).toUpperCase() + pharmacy.status.slice(1)}
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(pharmacy.status || 'pending')}`}>
+                          {(pharmacy.status || 'pending').charAt(0).toUpperCase() + (pharmacy.status || 'pending').slice(1)}
                         </span>
                       </div>
                     </div>
@@ -397,7 +384,7 @@ const AdminPharmacies = () => {
                     <p className="text-xs text-gray-600">Orders</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-lg font-bold text-gray-900">${(pharmacy.revenue / 1000).toFixed(0)}K</p>
+                    <p className="text-lg font-bold text-gray-900">${((pharmacy.revenue || 0) / 1000).toFixed(0)}K</p>
                     <p className="text-xs text-gray-600">Revenue</p>
                   </div>
                   <div className="text-center">
@@ -506,31 +493,31 @@ const AdminPharmacies = () => {
                     <h3 className="text-lg font-semibold mb-4">Performance Metrics</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-gray-50 p-4 rounded-xl">
-                        <p className="text-2xl font-bold text-gray-900">{selectedPharmacy.rating}</p>
+                        <p className="text-2xl font-bold text-gray-900">{selectedPharmacy.rating || 0}</p>
                         <p className="text-sm text-gray-600">Rating</p>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-xl">
-                        <p className="text-2xl font-bold text-gray-900">{selectedPharmacy.orders}</p>
+                        <p className="text-2xl font-bold text-gray-900">{selectedPharmacy.orders || 0}</p>
                         <p className="text-sm text-gray-600">Total Orders</p>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-xl">
-                        <p className="text-2xl font-bold text-gray-900">${selectedPharmacy.revenue.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-gray-900">${(selectedPharmacy.revenue || 0).toLocaleString()}</p>
                         <p className="text-sm text-gray-600">Revenue</p>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-xl">
-                        <p className="text-2xl font-bold text-gray-900">{selectedPharmacy.inventory}</p>
+                        <p className="text-2xl font-bold text-gray-900">{selectedPharmacy.inventory || 0}</p>
                         <p className="text-sm text-gray-600">Inventory Items</p>
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Documents</h3>
                   <div className="flex flex-wrap gap-2">
-                    {selectedPharmacy.documents.map((doc, index) => (
+                    {selectedPharmacy.documents?.map((doc, index) => (
                       <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                        {doc}
+                        {doc.name}
                       </span>
                     ))}
                   </div>

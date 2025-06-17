@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "name": "Pharmacie Centrale",
+    "address": "Avenue Kennedy, Yaoundé",
+    "phone": "+237123456789",
+    "latitude": 3.848,
+    "longitude": 11.502,
+    "hours": "8:00 AM - 8:00 PM",
+    "rating": 4.5,
+    "distance": 0.5,
+    "medications": [
+      {
+        "id": 1,
+        "name": "Paracetamol 500mg",
+        "price": 500,
+        "in_stock": true
+      },
+      {
+        "id": 2,
+        "name": "Ibuprofen 400mg",
+        "price": 750,
+        "in_stock": true
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Pharmacie du Marché",
+    "address": "Marché Central, Yaoundé",
+    "phone": "+237987654321",
+    "latitude": 3.850,
+    "longitude": 11.504,
+    "hours": "7:00 AM - 9:00 PM",
+    "rating": 4.2,
+    "distance": 1.2,
+    "medications": [
+      {
+        "id": 3,
+        "name": "Amoxicillin 250mg",
+        "price": 1200,
+        "in_stock": true
+      },
+      {
+        "id": 4,
+        "name": "Aspirin 100mg",
+        "price": 300,
+        "in_stock": false
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Pharmacie de la Paix",
+    "address": "Quartier Bastos, Yaoundé",
+    "phone": "+237555666777",
+    "latitude": 3.852,
+    "longitude": 11.498,
+    "hours": "8:30 AM - 7:30 PM",
+    "rating": 4.7,
+    "distance": 2.1,
+    "medications": [
+      {
+        "id": 5,
+        "name": "Vitamin C 1000mg",
+        "price": 800,
+        "in_stock": true
+      },
+      {
+        "id": 6,
+        "name": "Omeprazole 20mg",
+        "price": 1500,
+        "in_stock": true
+      }
+    ]
+  }
+]

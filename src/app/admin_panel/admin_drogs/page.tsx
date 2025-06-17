@@ -3,14 +3,28 @@
 import { AlertTriangle, CheckCircle, Clock, Download, Eye, Filter, MoreVertical, Package, RefreshCw, Search, Trash2, TrendingUp, Users } from 'lucide-react';
 import { useState } from 'react';
 
+interface Drug {
+  id: number;
+  name: string;
+  genericName: string;
+  category: string;
+  totalStock: number;
+  pharmaciesCount: number;
+  avgPrice: number;
+  status: 'active' | 'inactive' | 'pending' | 'flagged';
+  flagged: boolean;
+  reports: number;
+  lastUpdated: string;
+  image: string;
+}
+
 const AdminDrugsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedDrugs, setSelectedDrugs] = useState<number[]>([]);
-  const [showBulkActions, setShowBulkActions] = useState(false);
 
   // Mock data for drugs
-  const drugs = [
+  const drugs: Drug[] = [
     {
       id: 1,
       name: 'Paracetamol 500mg',
@@ -84,8 +98,8 @@ const AdminDrugsPage = () => {
   ];
 
   const handleSelectDrug = (drugId: number) => {
-    setSelectedDrugs(prev => 
-      prev.includes(drugId) 
+    setSelectedDrugs(prev =>
+      prev.includes(drugId)
         ? prev.filter(id => id !== drugId)
         : [...prev, drugId]
     );
@@ -118,12 +132,13 @@ const AdminDrugsPage = () => {
       </span>;
     }
 
-    let statusClass = 'bg-gray-100 text-gray-800'; // default
-    if (status === 'active') statusClass = 'bg-green-100 text-green-800';
-    else if (status === 'inactive') statusClass = 'bg-gray-100 text-gray-800';
-    else if (status === 'pending') statusClass = 'bg-yellow-100 text-yellow-800';
+    const statusStyles: Record<string, string> = {
+      active: 'bg-green-100 text-green-800',
+      inactive: 'bg-gray-100 text-gray-800',
+      pending: 'bg-yellow-100 text-yellow-800'
+    };
 
-    return <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClass}`}>
+    return <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusStyles[status] || 'bg-gray-100 text-gray-800'}`}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>;
   };

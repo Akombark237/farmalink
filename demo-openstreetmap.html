@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaLink OpenStreetMap Integration Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .code-block {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .comparison-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ PharmaLink OpenStreetMap Integration</h1>
+            <p>Free, open-source mapping solution with no API keys required!</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎉 Integration Status</h2>
+            <div class="status success">
+                <span class="emoji">✅</span>
+                <span><strong>OpenStreetMap successfully integrated!</strong> Your mapping solution is now completely free and open-source.</span>
+            </div>
+            <div class="status info">
+                <span class="emoji">🆓</span>
+                <span><strong>No API keys required!</strong> Unlike Google Maps, OpenStreetMap is free to use without any registration or billing.</span>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🌟 Key Advantages</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span class="emoji">🆓</span> Completely Free</h3>
+                    <ul>
+                        <li>No API keys required</li>
+                        <li>No billing or usage limits</li>
+                        <li>No registration needed</li>
+                        <li>Forever free to use</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🌍</span> Global Coverage</h3>
+                    <ul>
+                        <li>Detailed maps worldwide</li>
+                        <li>Community-maintained data</li>
+                        <li>Regular updates</li>
+                        <li>High-quality street data</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🔓</span> Open Source</h3>
+                    <ul>
+                        <li>Full control over mapping</li>
+                        <li>No vendor lock-in</li>
+                        <li>Customizable and extensible</li>
+                        <li>Community-driven development</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🚀</span> High Performance</h3>
+                    <ul>
+                        <li>Fast loading tiles</li>
+                        <li>Efficient caching</li>
+                        <li>Lightweight library</li>
+                        <li>Mobile optimized</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📍 Features Implemented</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span class="emoji">🗺️</span> Interactive Map</h3>
+                    <p>Full OpenStreetMap integration with Leaflet. Toggle between list and map view seamlessly.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🏥</span> Custom Pharmacy Markers</h3>
+                    <p>Red pharmacy cross markers with interactive popups showing detailed information.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">📱</span> User Location</h3>
+                    <p>Automatic geolocation detection with blue marker showing your current position.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">📏</span> Distance Filtering</h3>
+                    <p>Adjustable radius filter with visual circle and real-time pharmacy filtering.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🎯</span> Distance Calculation</h3>
+                    <p>Accurate distance calculation using Haversine formula for precise results.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">📱</span> Responsive Design</h3>
+                    <p>Mobile-friendly interface with touch-optimized controls and responsive layout.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>⚖️ OpenStreetMap vs Google Maps</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>OpenStreetMap + Leaflet</th>
+                        <th>Google Maps</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cost</strong></td>
+                        <td>🆓 Completely Free</td>
+                        <td>💰 Paid (after free tier)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Key</strong></td>
+                        <td>❌ Not Required</td>
+                        <td>✅ Required</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usage Limits</strong></td>
+                        <td>🚫 No Limits</td>
+                        <td>📊 Limited (then paid)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Source</strong></td>
+                        <td>🌍 Community (Open)</td>
+                        <td>🏢 Google (Proprietary)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customization</strong></td>
+                        <td>🎨 Highly Customizable</td>
+                        <td>🔒 Limited Options</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td>⚡ Fast & Lightweight</td>
+                        <td>⚡ Fast but Heavier</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Privacy</strong></td>
+                        <td>🔒 Privacy-Friendly</td>
+                        <td>👁️ Data Collection</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="demo-section">
+            <h2>💻 Code Examples</h2>
+            <h3>Basic OpenStreetMap Usage:</h3>
+            <div class="code-block">
+import OpenStreetMap from '../../../components/OpenStreetMap';
+
+const pharmacies = [
+  {
+    id: '1',
+    name: 'HealthPlus Pharmacy',
+    address: '123 Main St, New York, NY 10001',
+    phone: '(555) 123-4567',
+    rating: 4.8,
+    isOpenNow: true
+  }
+];
+
+&lt;OpenStreetMap
+  pharmacies={pharmacies}
+  onPharmacySelect={(pharmacy) => console.log(pharmacy)}
+  onDistanceFilter={(distance) => console.log(distance)}
+  className="h-96 rounded-xl shadow-lg"
+/&gt;
+            </div>
+
+            <h3>Custom Tile Provider (Satellite View):</h3>
+            <div class="code-block">
+&lt;TileLayer
+  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+  attribution="Tiles &copy; Esri"
+/&gt;
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎮 Interactive Demo</h2>
+            <p>Test the OpenStreetMap integration with these interactive features:</p>
+            
+            <a href="http://localhost:3001/use-pages/search" class="button" target="_blank">
+                🔍 Open Search Page
+            </a>
+            <a href="http://localhost:3001/use-pages/search?type=pharmacies" class="button" target="_blank">
+                🏥 Search Pharmacies
+            </a>
+            
+            <h3>Test Scenarios:</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span class="emoji">🗺️</span> Map View Toggle</h3>
+                    <p>Switch between list and map views to see the interactive OpenStreetMap.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">📍</span> Location Detection</h3>
+                    <p>Allow location access to see your position and distance calculations.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">📏</span> Distance Filtering</h3>
+                    <p>Adjust the radius filter and watch results update in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🏥</span> Marker Interaction</h3>
+                    <p>Click on pharmacy markers to see detailed information popups.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔧 Technical Implementation</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span class="emoji">🏗️</span> Architecture</h3>
+                    <ul>
+                        <li>OpenStreetMap.tsx - Core map component</li>
+                        <li>MapContainer.tsx - UI wrapper with controls</li>
+                        <li>Leaflet + React Leaflet integration</li>
+                        <li>Dynamic imports for SSR compatibility</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">📦</span> Dependencies</h3>
+                    <ul>
+                        <li>leaflet - Core mapping library</li>
+                        <li>react-leaflet - React components</li>
+                        <li>No API keys or external services</li>
+                        <li>Lightweight and efficient</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🎨</span> Customization</h3>
+                    <ul>
+                        <li>Custom pharmacy markers with CSS</li>
+                        <li>Multiple tile provider options</li>
+                        <li>Responsive design patterns</li>
+                        <li>Configurable zoom and center</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">⚡</span> Performance</h3>
+                    <ul>
+                        <li>Efficient tile caching</li>
+                        <li>Lazy loading of components</li>
+                        <li>Optimized marker rendering</li>
+                        <li>Mobile-friendly interactions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🌐 Resources & Documentation</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span class="emoji">📚</span> Documentation</h3>
+                    <ul>
+                        <li><a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a></li>
+                        <li><a href="https://leafletjs.com/" target="_blank">Leaflet Documentation</a></li>
+                        <li><a href="https://react-leaflet.js.org/" target="_blank">React Leaflet</a></li>
+                        <li>OPENSTREETMAP_INTEGRATION.md</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="emoji">🎨</span> Tile Providers</h3>
+                    <ul>
+                        <li><a href="https://leaflet-extras.github.io/leaflet-providers/preview/" target="_blank">Provider Preview</a></li>
+                        <li>Standard OpenStreetMap</li>
+                        <li>Satellite imagery options</li>
+                        <li>Terrain and topographic maps</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>✨ Conclusion</h2>
+            <div class="status success">
+                <span class="emoji">🎉</span>
+                <span><strong>Congratulations!</strong> Your PharmaLink project now has a powerful, free, and open-source mapping solution that will never require API keys or billing!</span>
+            </div>
+            
+            <p><strong>Key Benefits Achieved:</strong></p>
+            <ul>
+                <li>🆓 <strong>Completely free forever</strong> - No API keys, no billing, no limits</li>
+                <li>🌍 <strong>Global coverage</strong> - Detailed maps worldwide</li>
+                <li>🚀 <strong>High performance</strong> - Fast loading and responsive</li>
+                <li>🔓 <strong>Open source freedom</strong> - Full control and customization</li>
+                <li>📱 <strong>Mobile-friendly</strong> - Perfect on all devices</li>
+            </ul>
+            
+            <p>Enjoy your new mapping freedom with OpenStreetMap! 🗺️✨</p>
+        </div>
+    </div>
+</body>
+</html>

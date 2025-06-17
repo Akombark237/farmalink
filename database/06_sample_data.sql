@@ -53,23 +53,23 @@ INSERT INTO pharmacy_profiles (id, user_id, name, license_number, address, city,
 (uuid_generate_v4(), (SELECT id FROM users WHERE email = 'medicare@pharmacy.com'), 'MediCare Plus Pharmacy', 'PH-NY-002', '456 Health Blvd', 'New York', 'NY', '10002', '+1-212-555-0456', 'approved', 4.3, 89),
 (uuid_generate_v4(), (SELECT id FROM users WHERE email = 'quickmeds@pharmacy.com'), 'QuickMeds Express', 'PH-NY-003', '789 Fast Lane', 'New York', 'NY', '10003', '+1-212-555-0789', 'approved', 4.1, 67);
 
--- Insert sample pharmacy inventory
+-- Insert sample pharmacy inventory (prices in CFA Franc)
 INSERT INTO pharmacy_inventory (pharmacy_id, medication_id, current_stock, minimum_stock, unit_price, wholesale_price, is_available) VALUES
 -- HealthFirst Pharmacy inventory
-((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Paracetamol'), 500, 50, 12.99, 8.50, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Amoxicillin'), 200, 20, 25.50, 18.75, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Lisinopril'), 150, 15, 38.75, 28.50, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Vitamin D3'), 300, 30, 15.99, 10.25, true),
+((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Paracetamol'), 500, 50, 7794, 5100, true), -- 12.99 USD = 7,794 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Amoxicillin'), 200, 20, 15300, 11250, true), -- 25.50 USD = 15,300 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Lisinopril'), 150, 15, 23250, 17100, true), -- 38.75 USD = 23,250 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'HealthFirst Pharmacy'), (SELECT id FROM medications WHERE name = 'Vitamin D3'), 300, 30, 9594, 6150, true), -- 15.99 USD = 9,594 CFA
 
 -- MediCare Plus Pharmacy inventory
-((SELECT id FROM pharmacy_profiles WHERE name = 'MediCare Plus Pharmacy'), (SELECT id FROM medications WHERE name = 'Metformin'), 180, 18, 22.30, 16.75, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'MediCare Plus Pharmacy'), (SELECT id FROM medications WHERE name = 'Atorvastatin'), 120, 12, 45.20, 32.80, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'MediCare Plus Pharmacy'), (SELECT id FROM medications WHERE name = 'Ibuprofen'), 400, 40, 8.99, 5.50, true),
+((SELECT id FROM pharmacy_profiles WHERE name = 'MediCare Plus Pharmacy'), (SELECT id FROM medications WHERE name = 'Metformin'), 180, 18, 13380, 10050, true), -- 22.30 USD = 13,380 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'MediCare Plus Pharmacy'), (SELECT id FROM medications WHERE name = 'Atorvastatin'), 120, 12, 27120, 19680, true), -- 45.20 USD = 27,120 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'MediCare Plus Pharmacy'), (SELECT id FROM medications WHERE name = 'Ibuprofen'), 400, 40, 5394, 3300, true), -- 8.99 USD = 5,394 CFA
 
 -- QuickMeds Express inventory
-((SELECT id FROM pharmacy_profiles WHERE name = 'QuickMeds Express'), (SELECT id FROM medications WHERE name = 'Cetirizine'), 250, 25, 14.99, 9.75, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'QuickMeds Express'), (SELECT id FROM medications WHERE name = 'Paracetamol'), 350, 35, 11.99, 7.80, true),
-((SELECT id FROM pharmacy_profiles WHERE name = 'QuickMeds Express'), (SELECT id FROM medications WHERE name = 'Vitamin D3'), 200, 20, 16.50, 11.25, true);
+((SELECT id FROM pharmacy_profiles WHERE name = 'QuickMeds Express'), (SELECT id FROM medications WHERE name = 'Cetirizine'), 250, 25, 8994, 5850, true), -- 14.99 USD = 8,994 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'QuickMeds Express'), (SELECT id FROM medications WHERE name = 'Paracetamol'), 350, 35, 7194, 4680, true), -- 11.99 USD = 7,194 CFA
+((SELECT id FROM pharmacy_profiles WHERE name = 'QuickMeds Express'), (SELECT id FROM medications WHERE name = 'Vitamin D3'), 200, 20, 9900, 6750, true); -- 16.50 USD = 9,900 CFA
 
 -- Insert sample pharmacy hours (Monday = 1, Sunday = 0)
 INSERT INTO pharmacy_hours (pharmacy_id, day_of_week, open_time, close_time) VALUES

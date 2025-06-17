@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaLink Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .avatar {
+            background: #dbeafe;
+            padding: 0.75rem;
+            border-radius: 50%;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .header-subtitle {
+            color: #6b7280;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            background: #eff6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-text {
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .metric-icon {
+            padding: 1rem;
+            border-radius: 50%;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .metric-content h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0.25rem 0;
+        }
+        
+        .metric-content p {
+            margin: 0;
+            font-size: 0.875rem;
+        }
+        
+        .metric-label {
+            color: #6b7280;
+        }
+        
+        .metric-status {
+            color: #059669;
+            font-size: 0.75rem;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .appointment-item, .medication-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .appointment-item:last-child, .medication-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .tip-card {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+        }
+        
+        .tip-blue {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+        
+        .tip-green {
+            background: #f0fdf4;
+            color: #166534;
+        }
+        
+        .tip-purple {
+            background: #faf5ff;
+            color: #7c2d12;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-left {
+                margin-bottom: 1rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="avatar">👤</div>
+                <div>
+                    <div class="header-title">Welcome, User</div>
+                    <div class="header-subtitle">Here's your health at a glance</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary">🔔 Notifications</button>
+                <button class="btn btn-secondary">⚙️</button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/use-pages/dashboard/schedule-appointment" class="action-card">
+                <div class="action-icon">📅</div>
+                <div class="action-text">Schedule Appointment</div>
+            </a>
+            <a href="/use-pages/dashboard/message-doctor" class="action-card">
+                <div class="action-icon">💬</div>
+                <div class="action-text">Message Doctor</div>
+            </a>
+            <a href="/use-pages/dashboard/request-records" class="action-card">
+                <div class="action-icon">📄</div>
+                <div class="action-text">Request Records</div>
+            </a>
+            <a href="/use-pages/dashboard/refill-prescription" class="action-card">
+                <div class="action-icon">💊</div>
+                <div class="action-text">Refill Prescription</div>
+            </a>
+        </div>
+
+        <!-- Health Metrics -->
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #fecaca;">❤️</div>
+                <div class="metric-content">
+                    <p class="metric-label">Blood Pressure</p>
+                    <h3>120/80 mmHg</h3>
+                    <p class="metric-status">Normal range</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #e9d5ff;">💓</div>
+                <div class="metric-content">
+                    <p class="metric-label">Heart Rate</p>
+                    <h3>72 BPM</h3>
+                    <p class="metric-status">Normal range</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #dbeafe;">📈</div>
+                <div class="metric-content">
+                    <p class="metric-label">Glucose</p>
+                    <h3>94 mg/dL</h3>
+                    <p class="metric-status">Normal range</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #d1fae5;">⚖️</div>
+                <div class="metric-content">
+                    <p class="metric-label">BMI</p>
+                    <h3>24.2</h3>
+                    <p class="metric-status">Healthy weight</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <div class="card">
+                <h2>Recent Appointments</h2>
+                <div class="appointment-item">
+                    <div>
+                        <div style="font-weight: 500;">Dr. Sarah Johnson</div>
+                        <div style="font-size: 0.875rem; color: #6b7280;">General Check-up</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.875rem; font-weight: 500;">May 24, 2025</div>
+                        <div style="font-size: 0.75rem; color: #6b7280;">10:30 AM</div>
+                    </div>
+                </div>
+                <div class="appointment-item">
+                    <div>
+                        <div style="font-weight: 500;">Dr. Michel Kamga</div>
+                        <div style="font-size: 0.875rem; color: #6b7280;">Cardiology</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.875rem; font-weight: 500;">June 2, 2025</div>
+                        <div style="font-size: 0.75rem; color: #6b7280;">2:15 PM</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="/use-pages/dashboard/schedule-appointment" class="btn btn-primary" style="text-decoration: none; display: inline-block;">Schedule New Appointment</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Current Medications</h2>
+                <div class="medication-item">
+                    <div style="display: flex; align-items: center;">
+                        <div style="background: #dbeafe; padding: 0.5rem; border-radius: 50%; margin-right: 0.75rem;">💊</div>
+                        <div>
+                            <div style="font-weight: 500;">Lisinopril</div>
+                            <div style="font-size: 0.875rem; color: #6b7280;">10mg - Once daily</div>
+                        </div>
+                    </div>
+                    <button class="btn" style="background: #d1fae5; color: #059669; font-size: 0.75rem;">Take Now</button>
+                </div>
+                <div class="medication-item">
+                    <div style="display: flex; align-items: center;">
+                        <div style="background: #dbeafe; padding: 0.5rem; border-radius: 50%; margin-right: 0.75rem;">💊</div>
+                        <div>
+                            <div style="font-weight: 500;">Metformin</div>
+                            <div style="font-size: 0.875rem; color: #6b7280;">500mg - Twice daily</div>
+                        </div>
+                    </div>
+                    <button class="btn" style="background: #d1fae5; color: #059669; font-size: 0.75rem;">Take Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Tips -->
+        <div class="card">
+            <h2>Health Tips</h2>
+            <div class="tips-grid">
+                <div class="tip-card tip-blue">
+                    <div style="font-weight: 500; margin-bottom: 0.25rem;">Stay Hydrated</div>
+                    <div style="font-size: 0.875rem;">Remember to drink at least 8 glasses of water daily.</div>
+                </div>
+                <div class="tip-card tip-green">
+                    <div style="font-weight: 500; margin-bottom: 0.25rem;">Physical Activity</div>
+                    <div style="font-size: 0.875rem;">Aim for 30 minutes of moderate activity most days.</div>
+                </div>
+                <div class="tip-card tip-purple">
+                    <div style="font-weight: 500; margin-bottom: 0.25rem;">Sleep Well</div>
+                    <div style="font-size: 0.875rem;">Try to get 7-8 hours of quality sleep each night.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

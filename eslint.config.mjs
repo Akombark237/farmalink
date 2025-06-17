@@ -13,16 +13,16 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // Disable problematic rules for deployment
-      "@typescript-eslint/no-unused-vars": "warn",
+      // Disable unescaped entities rule for better readability
+      "react/no-unescaped-entities": "off",
+      // Allow unused variables with underscore prefix
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      // Allow any types in specific cases
       "@typescript-eslint/no-explicit-any": "warn",
-      "react/no-unescaped-entities": "warn",
-      "@next/next/no-page-custom-font": "warn",
+      // Allow img elements (we can optimize later)
       "@next/next/no-img-element": "warn",
-      "react-hooks/exhaustive-deps": "warn",
-      "import/no-anonymous-default-export": "warn",
-    },
-  },
+    }
+  }
 ];
 
 export default eslintConfig;

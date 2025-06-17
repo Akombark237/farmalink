@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { formatCfa, convertUsdToCfa } from '@/utils/currency';
 
 // Define types for our data
 type OrderItem = {
@@ -39,7 +40,7 @@ type Order = {
   tracking: string;
 };
 
-// Mock data - In a real app, this would come from an API
+// Mock data - In a real app, this would come from an API (prices in CFA)
 const mockOrders: Order[] = [
   {
     id: 'ORD-25102',
@@ -47,13 +48,13 @@ const mockOrders: Order[] = [
     status: 'Delivered',
     pharmacy: 'MediCare Pharmacy',
     pharmacyRating: 4.8,
-    total: 68.50,
+    total: convertUsdToCfa(68.50), // 41,100 CFA
     items: [
-      { id: 'MED-123', name: 'Amoxicillin 500mg', quantity: 2, price: 12.50, prescription: true },
-      { id: 'MED-456', name: 'Vitamin D3 5000IU', quantity: 1, price: 8.99, prescription: false },
-      { id: 'MED-789', name: 'Ibuprofen 200mg', quantity: 1, price: 5.49, prescription: false },
+      { id: 'MED-123', name: 'Amoxicillin 500mg', quantity: 2, price: convertUsdToCfa(12.50), prescription: true },
+      { id: 'MED-456', name: 'Vitamin D3 5000IU', quantity: 1, price: convertUsdToCfa(8.99), prescription: false },
+      { id: 'MED-789', name: 'Ibuprofen 200mg', quantity: 1, price: convertUsdToCfa(5.49), prescription: false },
     ],
-    address: '123 Main St, Apt 4B, New York, NY 10001',
+    address: 'Quartier Bastos, Yaoundé, Cameroon',
     deliveryMethod: 'Express Delivery',
     tracking: 'TRK-987654321'
   },
@@ -63,12 +64,12 @@ const mockOrders: Order[] = [
     status: 'Delivered',
     pharmacy: 'HealthFirst Pharmacy',
     pharmacyRating: 4.5,
-    total: 42.99,
+    total: convertUsdToCfa(42.99), // 25,794 CFA
     items: [
-      { id: 'MED-234', name: 'Atorvastatin 20mg', quantity: 1, price: 15.99, prescription: true },
-      { id: 'MED-567', name: 'Acetaminophen 500mg', quantity: 2, price: 6.25, prescription: false },
+      { id: 'MED-234', name: 'Atorvastatin 20mg', quantity: 1, price: convertUsdToCfa(15.99), prescription: true },
+      { id: 'MED-567', name: 'Acetaminophen 500mg', quantity: 2, price: convertUsdToCfa(6.25), prescription: false },
     ],
-    address: '123 Main St, Apt 4B, New York, NY 10001',
+    address: 'Quartier Melen, Yaoundé, Cameroon',
     deliveryMethod: 'Standard Delivery',
     tracking: 'TRK-876543210'
   },
@@ -78,14 +79,14 @@ const mockOrders: Order[] = [
     status: 'Delivered',
     pharmacy: 'Community Care Pharmacy',
     pharmacyRating: 4.9,
-    total: 103.75,
+    total: convertUsdToCfa(103.75), // 62,250 CFA
     items: [
-      { id: 'MED-345', name: 'Lisinopril 10mg', quantity: 1, price: 22.50, prescription: true },
-      { id: 'MED-678', name: 'Multivitamin Complex', quantity: 1, price: 14.75, prescription: false },
-      { id: 'MED-901', name: 'Loratadine 10mg', quantity: 1, price: 8.99, prescription: false },
-      { id: 'MED-112', name: 'Probiotic 50B CFU', quantity: 1, price: 32.99, prescription: false },
+      { id: 'MED-345', name: 'Lisinopril 10mg', quantity: 1, price: convertUsdToCfa(22.50), prescription: true },
+      { id: 'MED-678', name: 'Multivitamin Complex', quantity: 1, price: convertUsdToCfa(14.75), prescription: false },
+      { id: 'MED-901', name: 'Loratadine 10mg', quantity: 1, price: convertUsdToCfa(8.99), prescription: false },
+      { id: 'MED-112', name: 'Probiotic 50B CFU', quantity: 1, price: convertUsdToCfa(32.99), prescription: false },
     ],
-    address: '123 Main St, Apt 4B, New York, NY 10001',
+    address: 'Quartier Obili, Yaoundé, Cameroon',
     deliveryMethod: 'Standard Delivery',
     tracking: 'TRK-765432109'
   }
@@ -344,7 +345,7 @@ export default function OrderHistory() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">${order.total.toFixed(2)}</div>
+                            <div className="text-sm font-medium text-gray-900">{formatCfa(order.total)}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
@@ -432,7 +433,7 @@ export default function OrderHistory() {
                                             {item.quantity}
                                           </td>
                                           <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                            ${item.price.toFixed(2)}
+                                            {formatCfa(item.price)}
                                           </td>
                                           <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
                                             {item.prescription ? (
@@ -455,7 +456,7 @@ export default function OrderHistory() {
                                           Total
                                         </td>
                                         <td colSpan={2} className="px-4 py-2 text-sm font-medium text-gray-900">
-                                          ${order.total.toFixed(2)}
+                                          {formatCfa(order.total)}
                                         </td>
                                       </tr>
                                     </tfoot>

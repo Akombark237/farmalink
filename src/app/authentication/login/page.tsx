@@ -6,9 +6,11 @@ import { ArrowRight, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -59,36 +61,21 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // Use the AuthContext login method
+      const result = await login(email, password);
 
-      const data = await response.json();
+      if (result.success) {
+        console.log("Login successful!");
 
-      if (response.ok && data.success) {
-        console.log("Login successful!", data.user);
-        
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Navigate based on user type
-        if (data.user.userType === 'admin') {
-          router.push("/admin_panel/admin_dashboard");
-        } else if (data.user.userType === 'pharmacy') {
-          router.push("/vendors/pharmacy_dashboard");
-        } else {
-          router.push("/use-pages/dashboard");
-        }
+        // Navigate based on user type - the AuthContext will handle user state
+        // For now, redirect to dashboard (can be customized based on user role later)
+        router.push("/use-pages/dashboard");
       } else {
-        alert(data.error || "Login failed. Please try again.");
+        alert(result.error || "Login failed. Please try again.");
       }
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Network error. Please check your connection and try again.");
+      alert("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -114,13 +101,13 @@ export default function LoginPage() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-4 ${darkMode ? "dark" : ""}`}
+      className={`min-h-screen flex items-center justify-center p-4 ${darkMode ? "dark" : ""} content-over-background`}
       onMouseMove={handleMouseMove}
     >
       {/* Background with parallax effect */}
       <div className="fixed inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 transform"
+          className="absolute inset-0 bg-gradient-to-br from-blue-50/80 to-indigo-100/80 dark:from-gray-900/80 dark:to-indigo-950/80 transform backdrop-blur-sm"
           style={{
             transform: `translate(${mouseMoveX * -20}px, ${mouseMoveY * -20}px)`
           }}

@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, MapPin, Phone, ShoppingCart, Star } from "lucide-react";
 import { useParams } from "next/navigation";
-import { formatCfa } from "@/utils/currency";
 
 export default function PharmacyDetail() {
   const params = useParams();
-  const id = params.id;
+  const _id = params.id;
 
   const pharmacy = {
     name: "HealthFirst Pharmacy",
@@ -18,10 +17,10 @@ export default function PharmacyDetail() {
     hours: "8 AM - 8 PM",
     rating: 4.5,
     stock: [
-      { id: 1, name: "Aspirin 500mg", price: 7200, available: true },
-      { id: 2, name: "Cough Syrup", price: 5100, available: false },
-      { id: 3, name: "Vitamin C Tablets", price: 9000, available: true },
-      { id: 4, name: "Antibiotic Cream", price: 13200, available: true },
+      { id: 1, name: "Aspirin 500mg", price: 12.0, available: true },
+      { id: 2, name: "Cough Syrup", price: 8.5, available: false },
+      { id: 3, name: "Vitamin C Tablets", price: 15.0, available: true },
+      { id: 4, name: "Antibiotic Cream", price: 22.0, available: true },
     ],
   };
 
@@ -74,7 +73,7 @@ export default function PharmacyDetail() {
             <Card key={drug.id} className="border shadow rounded-2xl flex flex-col justify-between">
               <CardContent className="p-6 space-y-4">
                 <h3 className="text-lg font-semibold">{drug.name}</h3>
-                <p className="text-gray-600">{formatCfa(drug.price)}</p>
+                <p className="text-gray-600">${drug.price}</p>
                 {drug.available ? (
                   <Badge variant="default">In Stock</Badge>
                 ) : (

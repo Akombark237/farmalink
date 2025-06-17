@@ -33,9 +33,10 @@ import {
     X
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Prescription, StatusBadgeProps, PrescriptionCardProps, FileUploadProps } from "@/types";
 
 // Mock data for prescriptions
-const mockPrescriptions = [
+const mockPrescriptions: Prescription[] = [
   {
     id: "1",
     name: "Amoxicillin",
@@ -91,29 +92,29 @@ const mockPrescriptions = [
 ];
 
 // Status badge component
-const StatusBadge = ({ status }: { status: string }) => {
-  const statusStyles: {[key: string]: string} = {
+const StatusBadge = ({ status }: StatusBadgeProps) => {
+  const statusStyles: Record<string, string> = {
     active: "bg-green-100 text-green-800 hover:bg-green-200",
     expired: "bg-red-100 text-red-800 hover:bg-red-200",
     pending: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
   };
 
-  const statusIcons: {[key: string]: React.ReactNode} = {
+  const statusIcons: Record<string, React.ReactElement> = {
     active: <CheckCircle2 className="w-4 h-4 mr-1" />,
     expired: <X className="w-4 h-4 mr-1" />,
     pending: <Clock className="w-4 h-4 mr-1" />
   };
 
   return (
-    <Badge className={`flex items-center ${statusStyles[status] || ''}`}>
-      {statusIcons[status]}
+    <Badge className={`flex items-center ${statusStyles[status] || 'bg-gray-100 text-gray-800'}`}>
+      {statusIcons[status] || <Clock className="w-4 h-4 mr-1" />}
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </Badge>
   );
 };
 
 // Prescription card component
-const PrescriptionCard = ({ prescription, onDelete }: { prescription: any, onDelete: (id: number) => void }) => {
+const PrescriptionCard = ({ prescription, onDelete }: PrescriptionCardProps) => {
   return (
     <Card className="mb-6 hover:shadow-md transition-shadow duration-300">
       <CardHeader className="pb-2">
@@ -177,7 +178,7 @@ const PrescriptionCard = ({ prescription, onDelete }: { prescription: any, onDel
 };
 
 // File upload component
-const FileUpload = ({ onUpload }: { onUpload: (files: File[]) => void }) => {
+const FileUpload = ({ onUpload }: FileUploadProps) => {
   const [dragging, setDragging] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -319,7 +320,7 @@ const FileUpload = ({ onUpload }: { onUpload: (files: File[]) => void }) => {
 };
 
 export default function PrescriptionsPage() {
-  const [prescriptions, setPrescriptions] = useState<any[]>([]);
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -329,7 +330,7 @@ export default function PrescriptionsPage() {
     }, 500);
   }, []);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setPrescriptions(prescriptions.filter(p => p.id !== id));
     toast({
       title: "Prescription deleted",
@@ -340,7 +341,7 @@ export default function PrescriptionsPage() {
 
   const handleUpload = (files: File[]) => {
     // Simulate adding new prescriptions
-    const newPrescriptions = files.map((file, index) => ({
+    const newPrescriptions: Prescription[] = files.map((file, index) => ({
       id: `new-${Date.now()}-${index}`,
       name: file.name.split('.')[0],
       doctor: "To be reviewed",
@@ -351,11 +352,11 @@ export default function PrescriptionsPage() {
       refillsLeft: 0,
       totalRefills: 0,
       notes: "Awaiting provider confirmation",
-      imageUrl: file.type.startsWith('image/') 
-        ? URL.createObjectURL(file) 
+      imageUrl: file.type.startsWith('image/')
+        ? URL.createObjectURL(file)
         : "/api/placeholder/400/320"
     }));
-    
+
     setPrescriptions(prev => [...newPrescriptions, ...prev]);
   };
 

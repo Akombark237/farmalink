@@ -6,6 +6,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { formatCfa, convertUsdToCfa } from '@/utils/currency';
+
+// Dynamically import payment components to avoid SSR issues
+const NotchPayButton = dynamic(() => import('@/components/NotchPayButton'), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-gray-200 h-12 rounded-lg flex items-center justify-center">
+    <span className="text-gray-500">Loading payment options...</span>
+  </div>
+});
+
+const _PaymentStatus = dynamic(() => import('@/components/PaymentStatus'), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-gray-200 h-8 rounded"></div>
+});
 
 // Define types for our data
 type CartItem = {
@@ -27,7 +43,7 @@ type AddressInfo = {
 };
 
 type DeliveryMethodType = 'pickup' | 'standard' | 'express';
-type PaymentMethodType = 'card' | 'paypal' | 'cash';
+type PaymentMethodType = 'card' | 'paypal' | 'cash' | 'notchpay';
 
 export default function Checkout() {
   const router = useRouter();
@@ -46,19 +62,19 @@ export default function Checkout() {
     email: '',
   });
 
-  // Mock cart data - in a real app, this would come from your cart state management
+  // Mock cart data - in a real app, this would come from your cart state management (prices in CFA)
   useEffect(() => {
     // Simulate fetching cart data
     const mockCart = [
-      { id: 1, name: 'Amoxicillin 500mg', quantity: 1, price: 12.99, image: '/api/placeholder/100/100' },
-      { id: 2, name: 'Lisinopril 10mg', quantity: 1, price: 8.50, image: '/api/placeholder/100/100' },
-      { id: 3, name: 'Vitamin D3 1000IU', quantity: 2, price: 11.25, image: '/api/placeholder/100/100' },
+      { id: 1, name: 'Amoxicillin 500mg', quantity: 1, price: convertUsdToCfa(12.99), image: '/api/placeholder/100/100' },
+      { id: 2, name: 'Lisinopril 10mg', quantity: 1, price: convertUsdToCfa(8.50), image: '/api/placeholder/100/100' },
+      { id: 3, name: 'Vitamin D3 1000IU', quantity: 2, price: convertUsdToCfa(11.25), image: '/api/placeholder/100/100' },
     ];
     setCart(mockCart);
   }, []);
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const deliveryFee = deliveryMethod === 'express' ? 9.99 : deliveryMethod === 'standard' ? 4.99 : 0;
+  const deliveryFee = deliveryMethod === 'express' ? convertUsdToCfa(9.99) : deliveryMethod === 'standard' ? convertUsdToCfa(4.99) : 0;
   const tax = subtotal * 0.07; // Assuming 7% tax
   const total = subtotal + deliveryFee + tax;
 
@@ -169,7 +185,7 @@ export default function Checkout() {
                       <div className="flex-1">
                         <div className="flex items-center">
                           <h3 className="font-medium text-gray-800">Standard Delivery</h3>
-                          <span className="ml-auto font-medium">$4.99</span>
+                          <span className="ml-auto font-medium">{formatCfa(convertUsdToCfa(4.99))}</span>
                         </div>
                         <p className="text-gray-600 text-sm mt-1">Delivery within 24 hours</p>
                       </div>
@@ -185,7 +201,7 @@ export default function Checkout() {
                       <div className="flex-1">
                         <div className="flex items-center">
                           <h3 className="font-medium text-gray-800">Express Delivery</h3>
-                          <span className="ml-auto font-medium">$9.99</span>
+                          <span className="ml-auto font-medium">{formatCfa(convertUsdToCfa(9.99))}</span>
                         </div>
                         <p className="text-gray-600 text-sm mt-1">Delivery within 3 hours</p>
                       </div>
@@ -341,11 +357,24 @@ export default function Checkout() {
                     </div>
 
                     <div
+                      className={`border-2 rounded-lg p-4 cursor-pointer flex items-start ${paymentMethod === 'notchpay' ? 'border-blue-600 bg-blue-50' : 'border-gray-200'}`}
+                      onClick={() => setPaymentMethod('notchpay')}
+                    >
+                      <div className="mr-4 mt-1">
+                        <div className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">N</div>
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-800">NotchPay</h3>
+                        <p className="text-gray-600 text-sm mt-1">Pay with Mobile Money, Bank Transfer, or Card (Cameroon)</p>
+                      </div>
+                    </div>
+
+                    <div
                       className={`border-2 rounded-lg p-4 cursor-pointer flex items-start ${paymentMethod === 'cash' ? 'border-blue-600 bg-blue-50' : 'border-gray-200'}`}
                       onClick={() => setPaymentMethod('cash')}
                     >
                       <div className="mr-4 mt-1">
-                        <div className="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">$</div>
+                        <div className="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">₣</div>
                       </div>
                       <div>
                         <h3 className="font-medium text-gray-800">Cash on Delivery</h3>
@@ -407,6 +436,38 @@ export default function Checkout() {
                     </div>
                   )}
 
+                  {paymentMethod === 'notchpay' && (
+                    <div className="bg-purple-50 p-4 rounded-lg mb-6 border border-purple-200">
+                      <h3 className="text-lg font-medium text-gray-800 mb-3">NotchPay Payment</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">1</span>
+                          </div>
+                          <p className="text-gray-700">Click "Continue to Review" to proceed</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">2</span>
+                          </div>
+                          <p className="text-gray-700">Review your order and click "Pay with NotchPay"</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">3</span>
+                          </div>
+                          <p className="text-gray-700">Choose Mobile Money, Bank Transfer, or Card payment</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-3 bg-white rounded-lg border">
+                        <p className="text-sm text-gray-600">
+                          <strong>Supported payment methods:</strong> Orange Money, MTN Mobile Money,
+                          Express Union, Bank transfers, Visa, Mastercard
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex justify-between">
                     <button
                       onClick={prevStep}
@@ -449,7 +510,7 @@ export default function Checkout() {
                             <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                           </div>
                           <div className="text-sm font-medium text-gray-800">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            {formatCfa(item.price * item.quantity)}
                           </div>
                         </div>
                       ))}
@@ -513,7 +574,7 @@ export default function Checkout() {
                     <div className="flex items-center">
                       {paymentMethod === 'card' && <CreditCard size={18} className="text-blue-600 mr-2" />}
                       {paymentMethod === 'paypal' && <div className="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold text-xs mr-2">P</div>}
-                      {paymentMethod === 'cash' && <div className="bg-green-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold text-xs mr-2">$</div>}
+                      {paymentMethod === 'cash' && <div className="bg-green-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold text-xs mr-2">₣</div>}
                       <p className="text-gray-800">
                         {paymentMethod === 'card' ? 'Credit / Debit Card' :
                          paymentMethod === 'paypal' ? 'PayPal' :
@@ -525,19 +586,19 @@ export default function Checkout() {
                   <div className="mb-6">
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-600">Subtotal</span>
-                      <span className="text-gray-800">${subtotal.toFixed(2)}</span>
+                      <span className="text-gray-800">{formatCfa(subtotal)}</span>
                     </div>
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-600">Delivery Fee</span>
-                      <span className="text-gray-800">${deliveryFee.toFixed(2)}</span>
+                      <span className="text-gray-800">{formatCfa(deliveryFee)}</span>
                     </div>
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-600">Tax</span>
-                      <span className="text-gray-800">${tax.toFixed(2)}</span>
+                      <span className="text-gray-800">{formatCfa(tax)}</span>
                     </div>
                     <div className="flex justify-between text-lg font-medium">
                       <span className="text-gray-800">Total</span>
-                      <span className="text-blue-600">${total.toFixed(2)}</span>
+                      <span className="text-blue-600">{formatCfa(total)}</span>
                     </div>
                   </div>
 
@@ -549,17 +610,58 @@ export default function Checkout() {
                       Back
                     </button>
 
-                    <button
-                      onClick={handleSubmit}
-                      disabled={loading}
-                      className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 flex items-center disabled:bg-blue-400"
-                    >
-                      {loading ? (
-                        <>Processing...</>
-                      ) : (
-                        <>Place Order <Check size={18} className="ml-2" /></>
-                      )}
-                    </button>
+                    {paymentMethod === 'notchpay' ? (
+                      <ErrorBoundary
+                        fallback={
+                          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-yellow-800 mb-2">Payment system temporarily unavailable</p>
+                            <button
+                              onClick={() => setPaymentMethod('cash')}
+                              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                            >
+                              Use Cash on Delivery Instead
+                            </button>
+                          </div>
+                        }
+                      >
+                        <NotchPayButton
+                          amount={total}
+                          currency="XAF"
+                          email={address.email}
+                          phone={address.phone}
+                          name={address.fullName}
+                          orderId={`ORDER_${Date.now()}`}
+                          description={`PharmaLink Order - ${cart.length} items`}
+                          onSuccess={(data) => {
+                            console.log('Payment successful:', data);
+                            // Handle successful payment
+                            router.push('/use-pages/order-confirmation?status=success');
+                          }}
+                          onError={(error) => {
+                            console.error('Payment error:', error);
+                            alert('Payment failed: ' + error);
+                          }}
+                          onCancel={() => {
+                            console.log('Payment cancelled');
+                          }}
+                          disabled={loading}
+                        >
+                          Pay {total.toLocaleString()} FCFA with NotchPay
+                        </NotchPayButton>
+                      </ErrorBoundary>
+                    ) : (
+                      <button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 flex items-center disabled:bg-blue-400"
+                      >
+                        {loading ? (
+                          <>Processing...</>
+                        ) : (
+                          <>Place Order <Check size={18} className="ml-2" /></>
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
@@ -589,7 +691,7 @@ export default function Checkout() {
                             <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                           </div>
                           <div className="text-sm font-medium text-gray-800">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            {formatCfa(item.price * item.quantity)}
                           </div>
                         </div>
                       ))}
@@ -598,19 +700,19 @@ export default function Checkout() {
                     <div className="border-t border-gray-200 pt-4">
                       <div className="flex justify-between mb-2">
                         <span className="text-gray-600">Subtotal</span>
-                        <span className="text-gray-800">${subtotal.toFixed(2)}</span>
+                        <span className="text-gray-800">{formatCfa(subtotal)}</span>
                       </div>
                       <div className="flex justify-between mb-2">
                         <span className="text-gray-600">Delivery Fee</span>
-                        <span className="text-gray-800">${deliveryFee.toFixed(2)}</span>
+                        <span className="text-gray-800">{formatCfa(deliveryFee)}</span>
                       </div>
                       <div className="flex justify-between mb-2">
                         <span className="text-gray-600">Tax</span>
-                        <span className="text-gray-800">${tax.toFixed(2)}</span>
+                        <span className="text-gray-800">{formatCfa(tax)}</span>
                       </div>
                       <div className="flex justify-between text-lg font-medium">
                         <span className="text-gray-800">Total</span>
-                        <span className="text-blue-600">${total.toFixed(2)}</span>
+                        <span className="text-blue-600">{formatCfa(total)}</span>
                       </div>
                     </div>
                   </>

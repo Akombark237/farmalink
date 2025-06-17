@@ -1,22 +1,22 @@
 'use client'; 
 import {
-  AlertTriangle,
-  Bug,
-  Building2,
-  CheckCircle,
-  Clock,
-  Download,
-  Eye,
-  Filter,
-  Flag,
-  MessageSquare,
-  MoreVertical,
-  RefreshCw,
-  Search,
-  Shield,
-  TrendingDown,
-  TrendingUp,
-  Users
+    AlertTriangle,
+    Bug,
+    Building2,
+    CheckCircle,
+    Clock,
+    Download,
+    Eye,
+    Filter,
+    Flag,
+    MessageSquare,
+    MoreVertical,
+    RefreshCw,
+    Search,
+    Shield,
+    TrendingDown,
+    TrendingUp,
+    Users
 } from 'lucide-react';
 import { useState } from 'react';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -125,7 +125,7 @@ const AdminReportsPage = () => {
     }
   ];
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'Open': return 'text-red-600 bg-red-50 border-red-200';
       case 'In Progress': return 'text-blue-600 bg-blue-50 border-blue-200';
@@ -135,7 +135,7 @@ const AdminReportsPage = () => {
     }
   };
 
- const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority) => {
     switch (priority) {
       case 'Critical': return 'text-red-700 bg-red-100';
       case 'High': return 'text-orange-700 bg-orange-100';
@@ -145,7 +145,7 @@ const AdminReportsPage = () => {
     }
   };
 
- const getTypeIcon = (type: string) => {
+  const getTypeIcon = (type) => {
     switch (type) {
       case 'feedback': return <MessageSquare className="w-4 h-4" />;
       case 'technical': return <Bug className="w-4 h-4" />;
@@ -155,13 +155,7 @@ const AdminReportsPage = () => {
     }
   };
 
-const StatCard = ({ title, value, change, icon: Icon, trend }: {
-  title: string;
-  value: string | number;
-  change: string;
-  icon: any;
-  trend: 'up' | 'down';
-}) => (
+  const StatCard = ({ title, value, change, icon: Icon, trend }) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between">
         <div>

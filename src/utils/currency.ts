@@ -106,11 +106,113 @@ export function getPriceRange(price: number): keyof typeof PRICE_RANGES {
 export function calculateDiscount(originalPrice: number, discountedPrice: number) {
   const discountAmount = originalPrice - discountedPrice;
   const discountPercentage = Math.round((discountAmount / originalPrice) * 100);
-  
+
   return {
     amount: discountAmount,
     percentage: discountPercentage,
     formattedAmount: formatCfa(discountAmount),
     formattedPercentage: `${discountPercentage}%`
   };
+}
+
+// Additional functions for testing compatibility
+export type Currency = 'CFA' | 'USD'
+
+/**
+ * Format currency amount with proper locale formatting
+ * @param amount - The amount to format
+ * @param currency - The currency type (defaults to CFA)
+ * @returns Formatted currency string
+ */
+export function formatCurrency(amount: number, currency: Currency = 'CFA'): string {
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    throw new Error('Amount must be a valid number')
+  }
+
+  if (currency === 'CFA') {
+    // CFA doesn't use decimals, round to nearest whole number
+    const roundedAmount = Math.round(amount)
+    return `${roundedAmount.toLocaleString('fr-FR')} CFA`
+  } else if (currency === 'USD') {
+    return `$${amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  } else {
+    throw new Error(`Unsupported currency: ${currency}`)
+  }
+}
+
+/**
+ * Convert between currencies
+ * @param amount - Amount to convert
+ * @param fromCurrency - Source currency
+ * @param toCurrency - Target currency
+ * @param exchangeRate - Exchange rate (1 USD = exchangeRate CFA)
+ * @returns Converted amount
+ */
+export function convertCurrency(
+  amount: number,
+  fromCurrency: Currency,
+  toCurrency: Currency,
+  exchangeRate: number
+): number {
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    throw new Error('Amount must be a valid number')
+  }
+
+  if (typeof exchangeRate !== 'number' || exchangeRate <= 0) {
+    throw new Error('Exchange rate must be a positive number')
+  }
+
+  if (!['CFA', 'USD'].includes(fromCurrency)) {
+    throw new Error(`Invalid source currency: ${fromCurrency}`)
+  }
+
+  if (!['CFA', 'USD'].includes(toCurrency)) {
+    throw new Error(`Invalid target currency: ${toCurrency}`)
+  }
+
+  // Same currency, no conversion needed
+  if (fromCurrency === toCurrency) {
+    return amount
+  }
+
+  if (fromCurrency === 'USD' && toCurrency === 'CFA') {
+    return amount * exchangeRate
+  } else if (fromCurrency === 'CFA' && toCurrency === 'USD') {
+    return amount / exchangeRate
+  }
+
+  throw new Error(`Unsupported currency conversion: ${fromCurrency} to ${toCurrency}`)
+}
+
+/**
+ * Validate if an amount is valid for transactions
+ * @param amount - Amount to validate
+ * @returns True if valid, false otherwise
+ */
+export function validateAmount(amount: number): boolean {
+  if (typeof amount !== 'number' || isNaN(amount) || !isFinite(amount)) {
+    return false
+  }
+
+  // Must be positive and greater than 0
+  if (amount <= 0) {
+    return false
+  }
+
+  // Maximum amount limit (10 million CFA)
+  const maxAmount = 10000000
+  if (amount > maxAmount) {
+    return false
+  }
+
+  // Minimum amount limit (1 CFA)
+  const minAmount = 1
+  if (amount < minAmount) {
+    return false
+  }
+
+  return true
 }

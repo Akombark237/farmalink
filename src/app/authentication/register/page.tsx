@@ -14,7 +14,8 @@ import {
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface FormData {
   firstName: string;
@@ -31,7 +32,9 @@ interface FormData {
 
 export default function Register() {
   const router = useRouter();
+  const { register } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [userType, setUserType] = useState('patient');
   const [formStep, setFormStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
@@ -48,6 +51,11 @@ export default function Register() {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Fix hydration mismatch by ensuring client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -97,16 +105,39 @@ export default function Register() {
     if (!validateForm()) return;
 
     setLoading(true);
-    // Simulate API call
     try {
-      // In a real app, you would send the data to your API here
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccess(true);
-      // Redirect to dashboard after successful registration
-      setTimeout(() => {
-        if (userType === 'pharmacy') { router.push('/admin_panel/admin_dashboard'); } else { router.push('/use-pages/dashboard'); }
-      }, 2000);
-    } catch (err) {
+      // Create user registration data
+      const registrationData = {
+        name: userType === 'patient'
+          ? `${formData.firstName} ${formData.lastName}`
+          : formData.pharmacyName,
+        email: formData.email,
+        password: formData.password,
+        role: userType as 'user' | 'pharmacy'
+      };
+
+      // Use the AuthContext register method
+      const result = await register(registrationData);
+
+      if (result.success) {
+        console.log('Registration successful!');
+
+        // Show brief success message then redirect
+        setSuccess(true);
+
+        // Redirect based on user type
+        const redirectPath = userType === 'pharmacy'
+          ? '/vendors/pharmacy_dashboard'
+          : '/use-pages/dashboard';
+
+        setTimeout(() => {
+          router.push(redirectPath);
+        }, 2000);
+      } else {
+        setError(result.error || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
       setError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
@@ -118,10 +149,10 @@ export default function Register() {
     setError('');
   };
 
-  if (success) {
+  if (isClient && success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50/80 to-indigo-100/80 backdrop-blur-sm content-over-background">
+        <div className="w-full max-w-md p-8 space-y-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl">
           <div className="text-center">
             <CheckCircle2 className="mx-auto h-16 w-16 text-green-500" />
             <h2 className="mt-6 text-3xl font-bold text-gray-900">Registration Successful!</h2>
@@ -133,14 +164,14 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/80 to-indigo-100/80 backdrop-blur-sm content-over-background">
       <Head>
         <title>Register | PHARMALING</title>
         <meta name="description" content="Join PHARMALING to find the right medications at the best price" />
       </Head>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
           {/* Left side - Colorful illustration area */}
           <div className="lg:w-1/2 relative bg-gradient-to-br from-blue-500 to-indigo-600 p-12 text-white">
             <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -239,7 +270,7 @@ export default function Register() {
                 </div>
               )}
 
-              <form onSubmit={formStep === 1 ? handleNextStep : handleSubmit}>
+              <form onSubmit={formStep === 1 ? (e) => { e.preventDefault(); handleNextStep(); } : handleSubmit}>
                 {formStep === 1 ? (
                   /* Step 1: Account Information */
                   <div className="space-y-4">
@@ -472,10 +503,10 @@ export default function Register() {
                       </button>
                       <button
                         type="submit"
-                        disabled={loading}
-                        className="w-2/3 flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                        disabled={isClient && loading}
+                        className="w-2/3 flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
                       >
-                        {loading ? (
+                        {isClient && loading ? (
                           <>
                             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

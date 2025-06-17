@@ -46,32 +46,56 @@ env/
 ENV/
 .venv/
 .env/
-
-# Python cache
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Large model files
-*.bin
-*.safetensors
-*.onnx
-*.h5
-*.pkl
-*.joblib
+# Python packages
+*.egg-info/
+dist/
+build/
 
-# Duplicate project folder
-phamarlink/
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# Large documentation files
-*_COMPLETE.md
-*_SUCCESS.md
-*_FIXED.md
-*_SUMMARY.md
-*_GUIDE.md
-chatbot-analysis.html
+# PyTorch models
+*.pth
+*.pt
+
+# Gemini proxy virtual environment
+gemini-proxy/fine-tuning-data/venv/
+gemini-proxy/venv/
+gemini-proxy/__pycache__/
+gemini-proxy/*.pyc
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
 
 # Temporary files
 *.tmp
 *.temp
-*.log
+.cache/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
